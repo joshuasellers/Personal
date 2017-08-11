@@ -1,23 +1,10 @@
-<snippet>
-  <content><![CDATA[
-# ${1:Project Name}
-TODO: Write a project description
+# Practice
+Practice coding projects
 ## Installation
-TODO: Describe the installation process
+Clone the projects to run them
 ## Usage
-TODO: Write usage instructions
-## Contributing
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+The projects are:
+- Music: a playlist making application
+- Backtracking: an example of the backtracking algorithm
 ## History
-TODO: Write history
-## Credits
-TODO: Write credits
-## License
-TODO: Write license
-]]></content>
-  <tabTrigger>readme</tabTrigger>
-</snippet>
+See commit log for history
