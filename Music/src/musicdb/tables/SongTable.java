@@ -1,15 +1,26 @@
 package musicdb.tables;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Year;
 import java.util.ArrayList;
-import musicdb.objects.Artist;
+import java.util.List;
+import java.util.Scanner;
 
 import musicdb.objects.Song;
+
+import org.apache.poi.hssf.record.StringRecord;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 /**
  * Created by joshuasellers on 6/5/17.
@@ -18,7 +29,8 @@ public class SongTable {
     public static final String TableName = "songs";
 
     /**
-     * Reads a csv file for data and adds them to the songs table
+     * Reads a csv file for data and adds them to the albums table
+     *
      * Does not create the table. It must already be created
      *
      * @param conn: database connection to work with
@@ -28,38 +40,80 @@ public class SongTable {
 
     public static void populateSongTableFromCSV(Connection conn, String fileName)
             throws SQLException{
+
         /**
          * Structure to store the data as you read it in
          * Will be used later to populate the table
          */
-        ArrayList<Song> songs = new ArrayList<>();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(fileName));
+            HSSFWorkbook wb = new HSSFWorkbook(fs);
+            HSSFSheet sheet = wb.getSheetAt(0);
+            HSSFRow row;
 
-            // Skip the first line which is just the format specifier for the CSV file.
-            String line = br.readLine();
-            while((line = br.readLine()) != null){
-                String[] split = line.split("\t");
-                songs.add(new Song(split));
+            ArrayList<String> check = new ArrayList<>();
+
+            int rows; // No of rows
+            rows = sheet.getPhysicalNumberOfRows();
+
+            int cols = 0; // No of columns
+            int tmp = 0;
+
+            // get the data even if it doesn't start from first few rows
+            for (int i = 0; i < 10 || i < rows; i++) {
+                row = sheet.getRow(i);
+                if (row != null) {
+                    tmp = sheet.getRow(i).getPhysicalNumberOfCells();
+                    if (tmp > cols) cols = tmp;
+                }
             }
-            br.close();
-        } catch (IOException e) {
+            int counter = 0;
+            for (int r = 1; r < rows; r++) {
+                row = sheet.getRow(r);
+                if (row != null) {
+                    HSSFCell song = row.getCell((short) 0);
+                    HSSFCell artist = row.getCell((short) 1);
+                    HSSFCell album = row.getCell((short) 3);
+                    HSSFCell genre = row.getCell((short) 4);
+                    HSSFCell time = row.getCell((short) 5);
+                    HSSFCell t_num = row.getCell((short) 8);
+                    HSSFCell d_added = row.getCell((short) 12);
+                    HSSFCell plays = row.getCell((short) 13);
+                    HSSFCell l_played = row.getCell((short) 14);
+                    HSSFCell skips = row.getCell((short) 15);
+                    HSSFCell l_skipped = row.getCell((short) 16);
+                    if (song != null && artist != null &&
+                            album != null && genre != null && time != null &&
+                            t_num != null && d_added != null && plays != null &&
+                            l_played != null && skips != null && l_skipped != null)
+                    {
+                        if (!check.contains(song.toString())) {
+                            check.add(song.toString());
+                            String new_song = song.toString().replaceAll("'", "''");
+                            String new_artist = artist.toString().replaceAll("'", "''");
+                            String new_album = album.toString().replaceAll("'", "''");
+                            String new_genre = genre.toString().replaceAll("'", "''");
+                            String new_time = time.toString().replaceAll("\\.0*$", "");
+                            String new_t_num = t_num.toString().replaceAll("\\.0*$", "");
+                            String new_d_added = d_added.toString().replaceAll("'", "''");
+                            String new_plays = plays.toString().replaceAll("\\.0*$", "");
+                            String new_l_played = l_played.toString().replaceAll("'", "''");
+                            String new_skips = skips.toString().replaceAll("\\.0*$", "");
+                            String new_l_skipped = l_skipped.toString().replaceAll("'", "''");
+                            addSong(conn,
+                                    new Song(counter, new_song, new_artist, new_album, new_genre,
+                                            Integer.parseInt(new_time), Integer.parseInt(new_t_num),
+                                            new_d_added, Integer.parseInt(new_plays), new_l_played,
+                                            Integer.parseInt(new_skips),new_l_skipped));
+                            counter++;
+                        }
+                    }
+                }
+            }
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
-
-        /**
-         * Creates the SQL query to do a bulk add of all songs
-         * that were read in. This is more efficient then adding one
-         * at a time
-         */
-        String sql = createSongsInsertSQL(songs);
-
-        /**
-         * Create and execute an SQL statement
-         * execute only returns if it was successful
-         */
-        Statement stmt = conn.createStatement();
-        stmt.execute(sql);
     }
 
     /**
@@ -71,21 +125,20 @@ public class SongTable {
         try {
             String query = "CREATE TABLE IF NOT EXISTS songs("
                     + "SONG_ID INT PRIMARY KEY,"
-                    + "NAME VARCHAR(255),"
-                    + "ARTIST_ID VARCHAR(255),"
-                    + "ALBUM_ID VARCHAR(255),"
-                    + "GENRE_ID VARCHAR(255),"
-                    + "TIME INT,"
-                    + "DISC_NUM INT,"
+                    + "SONG_NAME VARCHAR(255),"
+                    + "ARTIST_ID INT,"
+                    + "ALBUM_ID INT,"
+                    + "GENRE_ID INT,"
+                    + "SONG_TIME INT,"
                     + "TRACK_NUM INT,"
-                    + "YEAR INT,"
                     + "DATE_ADDED VARCHAR(255),"
-                    + "COMMENT VARCHAR(255),"
                     + "PLAYS INT,"
                     + "LAST_PLAYED VARCHAR(255),"
                     + "SKIPS INT,"
-                    + "LAST_SKIPPED INT,"
-                    + "RATING INT);";
+                    + "LAST_SKIPPED VARCHAR(255),"
+                    + "FOREIGN KEY (ARTIST_ID) REFERENCES artists,"
+                    + "FOREIGN KEY (ALBUM_ID) REFERENCES albums,"
+                    + "FOREIGN KEY (GENRE_ID) REFERENCES genres);" ;
 
             /**
              * Create a query and execute
@@ -101,72 +154,113 @@ public class SongTable {
      * Adds a single song to the database
      *
      */
-    public static void addSong(Connection conn, int song_id,String name, String artist_id,
-                               String album_id,String genre_id,int time,int disc_num,int track_num,String year,
-                               String date_added,String comment,int plays,String last_played,int skips,
-                               String last_skipped,int rating){
-
+    public static void addSong(Connection conn, Song s){
         /**
-         * SQL insert statement
-         */
-        String query = String.format("INSERT INTO songs "
-                        + "VALUES(%d,\'%s\',\'%s\',\'%s\',\'%s\',%d,%d,%d,\'%s\',\'%s\',"
-                        + "\'%s\',%d,\'%s\',%d,\'%s\',%d);",
-                song_id,name,artist_id,album_id,genre_id,time,disc_num,track_num,year,
-                date_added,comment,plays,last_played,skips,last_skipped,rating);
+        * SQL insert statement
+        */
         try {
             /**
              * create and execute the query
              */
-            Statement stmt = conn.createStatement();
-            stmt.execute(query);
+            String query1 = "SELECT ARTIST_INDEX FROM artists WHERE ARTIST_NAME=\'"+s.getArtist_ID()+"\';";
+            Statement stmt1 = conn.createStatement();
+            ResultSet result = stmt1.executeQuery(query1);
+            String query2 = "SELECT G_ID FROM genres WHERE GENRE=\'"+s.getGenre_ID()+"\';";
+            Statement stmt2 = conn.createStatement();
+            ResultSet result1 = stmt2.executeQuery(query2);
+            String query3 = "SELECT ALBUM_ID FROM albums WHERE ALBUM_NAME=\'"+s.getAlbum_ID()+"\';";
+            Statement stmt3 = conn.createStatement();
+            ResultSet result2 = stmt3.executeQuery(query3);
+            if (result.next() && result1.next() && result2.next()){
+                String query = String.format("INSERT INTO songs "
+                                + "VALUES(%d,\'%s\',%d,%d,%d,%d,%d,\'%s\',%d,"
+                                + "\'%s\',%d,\'%s\');",
+                        s.getSong_ID(),s.getName(),result.getInt(1),result2.getInt(1),result1.getInt(1),
+                        s.getTime(),s.getTrack_Num(),s.getDate_Added(),s.getPlays(),s.getLast_Played(),
+                        s.getSkips(),s.getLast_Skipped());
+                Statement stmt = conn.createStatement();
+                stmt.execute(query);
+            }
+            /**
+             * create and execute the query
+             */
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    /**
-     * This creates an sql statement to do a bulk add of songs
-     *
-     * @param songs: list of Song objects to add
-     *
-     * @return
-     */
-    public static String createSongsInsertSQL(ArrayList<Song> songs){
-        StringBuilder sb = new StringBuilder();
+    public static String printPossibleSongs(Connection conn, String inp, Scanner scan) {
+        String new_inp1 = inp.replaceAll("'", "''");
+        String new_inp2 = new_inp1.replaceAll("\\.0*$", "");
+        String query = "SELECT SONG_NAME FROM songs " +
+                    "WHERE SONG_NAME LIKE \'%"+ new_inp2 +"%\'";
+        int num = 0;
+        String[] holder = new String[10];
+            try {
+                Statement stmt = conn.createStatement();
+                ResultSet result = stmt.executeQuery(query);
+                int count = 0;
+                while(result.next()){
+                    System.out.println("**************");
+                    System.out.format(count+ ": %-5s\n",
 
-        /**
-         * The start of the statement,
-         * tells it the table to add it to
-         * the order of the data in reference
-         * to the columns to add it to
-         */
-        sb.append("INSERT INTO songs (SONG_ID,NAME STRING,ARTIST_ID INT,ALBUM_ID INT,GENRE_ID INT,"
-                + "TIME,DISC_NUM,TRACK_NUM,YEAR,DATE_ADDED,COMMENT,PLAYS,LAST_PLAYED,"
-                + "SKIPS,LAST_SKIPPED,RATING) VALUES");
-
-        /**
-         * For each song append a tuple
-         * If it is not the last artist add a comma to separate
-         * If it is the last artist add a semi-colon to end the statement
-         */
-        for(int i = 0; i < songs.size(); i++){
-            Song d = songs.get(i);
-            sb.append(String.format("(%d,\'%s\',\'%s\',\'%s\',\'%s\',%d,%d,%d,\'%s\',\'%s\',"
-                            + "\'%s\',%d,\'%s\',%d,\'%s\',%d)",
-                    d.getSong_ID(), d.getName(), d.getArtist_ID(), d.getAlbum_ID(),
-                    d.getGenre_ID(), d.getTime(),d.getDisc_Num(),d.getTrack_Num(),
-                    d.getYear(), d.getDate_Added(), d.getComment(), d.getPlays(),
-                    d.getLast_Played(), d.getSkips(), d.getLast_Skipped(), d.getRating()));
-            if( i != songs.size()-1){
-                sb.append(",");
+                            result.getString(1)  //name
+                    );
+                    System.out.println("**************");
+                    holder[count] = result.getString(1);
+                    count++;
+                    if (count%10==0){
+                        System.out.println("Print next ten results (Y/N)?");
+                        String s = scan.next();
+                        if (s.equals("Y")) {
+                            count = 0;
+                        }
+                        else {
+                            System.out.println("Quit (Y/N)?");
+                            inp = scan.next();
+                            if (inp.equals("Y")) return "q";
+                            else{
+                                System.out.println("Choose number:");
+                                num = Integer.parseInt(scan.next());
+                                return holder[num];
+                            }
+                        }
+                    }
+                }
             }
-            else{
-                sb.append(";");
+            catch (SQLException e)
+            {
+                e.printStackTrace();
             }
+        return "q";
         }
 
-        return sb.toString();
-    }
+        public static void createPlaylist(Connection conn, String song, int length){
+            String new_inp1 = song.replaceAll("'", "''");
+            String new_inp2 = new_inp1.replaceAll("\\.0*$", "");
+            String query = "SELECT * FROM songs " +
+                    "WHERE SONG_NAME = \'"+new_inp2+"\'";
+            try {
+                Statement stmt = conn.createStatement();
+                ResultSet result = stmt.executeQuery(query);
+                while (result.next()) {
+                    int id = result.getInt(1);
+                    String name = result.getString(2);
+                    int artist_id = result.getInt(3);
+                    int album_id = result.getInt(4);
+                    int genre_id = result.getInt(5);
+                    int song_time = result.getInt(6);
+                    int track_num = result.getInt(7);
+                    String date_added = result.getString(8);
+                    int plays = result.getInt(9);
+                    String last_played = result.getString(10);
+                    int skips = result.getInt(11);
+                    String last_skipped = result.getString(12);
+                }
+            }
+            catch (SQLException e)
+            {
+                e.printStackTrace();
+            }
+        }
 }
