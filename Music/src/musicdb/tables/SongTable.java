@@ -1,17 +1,12 @@
 package musicdb.tables;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import musicdb.objects.Song;
 
@@ -222,7 +217,8 @@ public class SongTable {
                             else{
                                 System.out.println("Choose number:");
                                 num = Integer.parseInt(scan.next());
-                                return holder[num];
+                                if (num>9) System.out.println("INVALID NUMBER");
+                                else return holder[num];
                             }
                         }
                     }
@@ -235,7 +231,8 @@ public class SongTable {
         return "q";
         }
 
-        public static void createPlaylist(Connection conn, String song, int length){
+        public static void createPlaylist(Connection conn, String song, int length, Scanner scan){
+            int counter = 0;
             String new_inp1 = song.replaceAll("'", "''");
             String new_inp2 = new_inp1.replaceAll("\\.0*$", "");
             String query = "SELECT * FROM songs " +
@@ -256,6 +253,102 @@ public class SongTable {
                     String last_played = result.getString(10);
                     int skips = result.getInt(11);
                     String last_skipped = result.getString(12);
+                    System.out.println("Discovery or Comfort: (D/C)");
+                    String dc = scan.next();
+                    if (dc.equals("D")){
+                        Map<Integer, Integer> artist_tracker = new HashMap<>();
+                        Map<Integer, Integer> year_tracker = new HashMap<>();
+                        String query2 = "SELECT * FROM songs " +
+                                "WHERE GENRE_ID ="+genre_id+" " +
+                                "ORDER BY PLAYS DESC, SKIPS DESC";
+                        Statement stm = conn.createStatement();
+                        ResultSet resul = stmt.executeQuery(query2);
+                        String COMMA_DELIMITER = ",";
+                        String NEW_LINE_SEPARATOR = "\n";
+
+                        String FILE_HEADER = "song,artist";
+
+                        FileWriter fileWriter = null;
+                        try {
+                            fileWriter = new FileWriter(song + "_PLAYLIST.csv");
+                            fileWriter.append(FILE_HEADER);
+                            fileWriter.append(NEW_LINE_SEPARATOR);
+                            while (resul.next() && length > counter) {
+                                String query4 = "SELECT ALBUM_YEAR FROM albums " +
+                                        "WHERE ALBUM_ID =" + resul.getInt(4);
+                                Statement s = conn.createStatement();
+                                ResultSet res = stmt.executeQuery(query4);
+                                res.next();
+                                int year = res.getInt(1);
+                                try {
+                                    if (resul.getInt(1)==id) {
+                                        if (!artist_tracker.containsKey(id)) {
+                                            String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                    "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                            Statement st = conn.createStatement();
+                                            ResultSet resu = stmt.executeQuery(query3);
+                                            resu.next();
+                                            fileWriter.append(resu.getString(1));
+                                            fileWriter.append(COMMA_DELIMITER);
+                                            fileWriter.append(resul.getString(2));
+                                            fileWriter.append(NEW_LINE_SEPARATOR);
+                                            if (resul.getInt(6)>480) artist_tracker.put(id,(int)Math.round(length*.1));
+                                            else artist_tracker.put(id,1);
+                                            counter++;
+                                        }
+                                        else if (artist_tracker.containsKey(id) && artist_tracker.get(id) < length*.1){
+                                            String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                    "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                            Statement st = conn.createStatement();
+                                            ResultSet resu = stmt.executeQuery(query3);
+                                            resu.next();
+                                            fileWriter.append(resu.getString(1));
+                                            fileWriter.append(COMMA_DELIMITER);
+                                            fileWriter.append(resul.getString(2));
+                                            fileWriter.append(NEW_LINE_SEPARATOR);
+                                            if (resul.getInt(6)>480) artist_tracker.put(id,(int)Math.round(length*.1));
+                                            else artist_tracker.replace(id,artist_tracker.get(id)+1);
+                                            counter++;
+                                        }
+                                        else continue;
+                                    }
+                                    else {
+                                        if (!artist_tracker.containsKey(resul.getInt(3))) {
+                                            String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                    "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                            Statement st = conn.createStatement();
+                                            ResultSet resu = stmt.executeQuery(query3);
+                                            resu.next();
+                                            fileWriter.append(resu.getString(1));
+                                            fileWriter.append(COMMA_DELIMITER);
+                                            fileWriter.append(resul.getString(2));
+                                            fileWriter.append(NEW_LINE_SEPARATOR);
+                                            if (resul.getInt(6)>480) artist_tracker.put(resul.getInt(3),(int)Math.round(length*.1));
+                                            else artist_tracker.put(resul.getInt(3),1);
+                                            counter++;
+                                        }
+                                        else if (artist_tracker.containsKey(resul.getInt(3)) && artist_tracker.get(resul.getInt(3)) < length*.1){
+                                            String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                    "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                            Statement st = conn.createStatement();
+                                            ResultSet resu = stmt.executeQuery(query3);
+                                            resu.next();
+                                            fileWriter.append(resu.getString(1));
+                                            fileWriter.append(COMMA_DELIMITER);
+                                            fileWriter.append(resul.getString(2));
+                                            fileWriter.append(NEW_LINE_SEPARATOR);
+                                            if (resul.getInt(6)>480) artist_tracker.put(resul.getInt(3),(int)Math.round(length*.1));
+                                            else artist_tracker.replace(resul.getInt(3),artist_tracker.get(id)+1);
+                                            counter++;
+                                        }
+                                        else continue;
+                                    }
+                                }
+                                catch (Exception e) {}
+                            }
+                        }
+                        catch (IOException e){}
+                    }
                 }
             }
             catch (SQLException e)
