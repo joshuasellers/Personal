@@ -260,24 +260,26 @@ public class SongTable {
                         Map<Integer, Integer> year_tracker = new HashMap<>();
                         String query2 = "SELECT * FROM songs " +
                                 "WHERE GENRE_ID ="+genre_id+" " +
-                                "ORDER BY PLAYS DESC, SKIPS DESC";
+                                "ORDER BY PLAYS ASC, (SKIPS/PLAYS) ASC";
                         Statement stm = conn.createStatement();
-                        ResultSet resul = stmt.executeQuery(query2);
-                        String COMMA_DELIMITER = ",";
-                        String NEW_LINE_SEPARATOR = "\n";
+                        ResultSet resul = stm.executeQuery(query2);
 
-                        String FILE_HEADER = "song,artist";
+                        PrintWriter pw = null;
 
-                        FileWriter fileWriter = null;
                         try {
-                            fileWriter = new FileWriter(song + "_PLAYLIST.csv");
-                            fileWriter.append(FILE_HEADER);
-                            fileWriter.append(NEW_LINE_SEPARATOR);
+                            pw = new PrintWriter(new File(song+"_playlist.csv"));
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("song");
+                            sb.append(',');
+                            sb.append("artist");
+                            sb.append('\n');
+
                             while (resul.next() && length > counter) {
                                 String query4 = "SELECT ALBUM_YEAR FROM albums " +
                                         "WHERE ALBUM_ID =" + resul.getInt(4);
                                 Statement s = conn.createStatement();
-                                ResultSet res = stmt.executeQuery(query4);
+                                ResultSet res = s.executeQuery(query4);
                                 res.next();
                                 int year = res.getInt(1);
                                 try {
@@ -287,12 +289,12 @@ public class SongTable {
                                                 String query3 = "SELECT ARTIST_NAME FROM artists " +
                                                         "WHERE ARTIST_INDEX =" + resul.getInt(3);
                                                 Statement st = conn.createStatement();
-                                                ResultSet resu = stmt.executeQuery(query3);
+                                                ResultSet resu = st.executeQuery(query3);
                                                 resu.next();
-                                                fileWriter.append(resu.getString(1));
-                                                fileWriter.append(COMMA_DELIMITER);
-                                                fileWriter.append(resul.getString(2));
-                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                sb.append("\""+resu.getString(1)+"\"");
+                                                sb.append(",");
+                                                sb.append("\""+resul.getString(2)+"\"");
+                                                sb.append("\n");
                                                 if (resul.getInt(6) > 480)
                                                     artist_tracker.put(id, (int) Math.round(length * .1));
                                                 else artist_tracker.put(id, 1);
@@ -303,12 +305,12 @@ public class SongTable {
                                                 String query3 = "SELECT ARTIST_NAME FROM artists " +
                                                         "WHERE ARTIST_INDEX =" + resul.getInt(3);
                                                 Statement st = conn.createStatement();
-                                                ResultSet resu = stmt.executeQuery(query3);
+                                                ResultSet resu = st.executeQuery(query3);
                                                 resu.next();
-                                                fileWriter.append(resu.getString(1));
-                                                fileWriter.append(COMMA_DELIMITER);
-                                                fileWriter.append(resul.getString(2));
-                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                sb.append("\""+resu.getString(1)+"\"");
+                                                sb.append(",");
+                                                sb.append("\""+resul.getString(2)+"\"");
+                                                sb.append("\n");
                                                 if (resul.getInt(6) > 480)
                                                     artist_tracker.put(id, (int) Math.round(length * .1));
                                                 else artist_tracker.put(id, 1);
@@ -321,12 +323,12 @@ public class SongTable {
                                                 String query3 = "SELECT ARTIST_NAME FROM artists " +
                                                         "WHERE ARTIST_INDEX =" + resul.getInt(3);
                                                 Statement st = conn.createStatement();
-                                                ResultSet resu = stmt.executeQuery(query3);
+                                                ResultSet resu = st.executeQuery(query3);
                                                 resu.next();
-                                                fileWriter.append(resu.getString(1));
-                                                fileWriter.append(COMMA_DELIMITER);
-                                                fileWriter.append(resul.getString(2));
-                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                sb.append("\""+resu.getString(1)+"\"");
+                                                sb.append(",");
+                                                sb.append("\""+resul.getString(2)+"\"");
+                                                sb.append("\n");
                                                 if (resul.getInt(6) > 480)
                                                     artist_tracker.put(id, (int) Math.round(length * .1));
                                                 else artist_tracker.replace(id, artist_tracker.get(id) + 1);
@@ -337,12 +339,12 @@ public class SongTable {
                                                 String query3 = "SELECT ARTIST_NAME FROM artists " +
                                                         "WHERE ARTIST_INDEX =" + resul.getInt(3);
                                                 Statement st = conn.createStatement();
-                                                ResultSet resu = stmt.executeQuery(query3);
+                                                ResultSet resu = st.executeQuery(query3);
                                                 resu.next();
-                                                fileWriter.append(resu.getString(1));
-                                                fileWriter.append(COMMA_DELIMITER);
-                                                fileWriter.append(resul.getString(2));
-                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                sb.append("\""+resu.getString(1)+"\"");
+                                                sb.append(",");
+                                                sb.append("\""+resul.getString(2)+"\"");
+                                                sb.append("\n");
                                                 if (resul.getInt(6) > 480)
                                                     artist_tracker.put(id, (int) Math.round(length * .1));
                                                 else artist_tracker.replace(id, artist_tracker.get(id) + 1);
@@ -358,12 +360,12 @@ public class SongTable {
                                                 String query3 = "SELECT ARTIST_NAME FROM artists " +
                                                         "WHERE ARTIST_INDEX =" + resul.getInt(3);
                                                 Statement st = conn.createStatement();
-                                                ResultSet resu = stmt.executeQuery(query3);
+                                                ResultSet resu = st.executeQuery(query3);
                                                 resu.next();
-                                                fileWriter.append(resu.getString(1));
-                                                fileWriter.append(COMMA_DELIMITER);
-                                                fileWriter.append(resul.getString(2));
-                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                sb.append("\""+resu.getString(1)+"\"");
+                                                sb.append(",");
+                                                sb.append("\""+resul.getString(2)+"\"");
+                                                sb.append("\n");
                                                 if (resul.getInt(6) > 480)
                                                     artist_tracker.put(resul.getInt(3), (int) Math.round(length * .1));
                                                 else artist_tracker.put(resul.getInt(3), 1);
@@ -374,12 +376,12 @@ public class SongTable {
                                                 String query3 = "SELECT ARTIST_NAME FROM artists " +
                                                         "WHERE ARTIST_INDEX =" + resul.getInt(3);
                                                 Statement st = conn.createStatement();
-                                                ResultSet resu = stmt.executeQuery(query3);
+                                                ResultSet resu = st.executeQuery(query3);
                                                 resu.next();
-                                                fileWriter.append(resu.getString(1));
-                                                fileWriter.append(COMMA_DELIMITER);
-                                                fileWriter.append(resul.getString(2));
-                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                sb.append("\""+resu.getString(1)+"\"");
+                                                sb.append(",");
+                                                sb.append("\""+resul.getString(2)+"\"");
+                                                sb.append("\n");
                                                 if (resul.getInt(6) > 480)
                                                     artist_tracker.put(resul.getInt(3), (int) Math.round(length * .1));
                                                 else artist_tracker.put(resul.getInt(3), 1);
@@ -392,12 +394,12 @@ public class SongTable {
                                                 String query3 = "SELECT ARTIST_NAME FROM artists " +
                                                         "WHERE ARTIST_INDEX =" + resul.getInt(3);
                                                 Statement st = conn.createStatement();
-                                                ResultSet resu = stmt.executeQuery(query3);
+                                                ResultSet resu = st.executeQuery(query3);
                                                 resu.next();
-                                                fileWriter.append(resu.getString(1));
-                                                fileWriter.append(COMMA_DELIMITER);
-                                                fileWriter.append(resul.getString(2));
-                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                sb.append("\""+resu.getString(1)+"\"");
+                                                sb.append(",");
+                                                sb.append("\""+resul.getString(2)+"\"");
+                                                sb.append("\n");
                                                 if (resul.getInt(6) > 480)
                                                     artist_tracker.put(resul.getInt(3), (int) Math.round(length * .1));
                                                 else
@@ -409,12 +411,12 @@ public class SongTable {
                                                 String query3 = "SELECT ARTIST_NAME FROM artists " +
                                                         "WHERE ARTIST_INDEX =" + resul.getInt(3);
                                                 Statement st = conn.createStatement();
-                                                ResultSet resu = stmt.executeQuery(query3);
+                                                ResultSet resu = st.executeQuery(query3);
                                                 resu.next();
-                                                fileWriter.append(resu.getString(1));
-                                                fileWriter.append(COMMA_DELIMITER);
-                                                fileWriter.append(resul.getString(2));
-                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                sb.append("\""+resu.getString(1)+"\"");
+                                                sb.append(",");
+                                                sb.append("\""+resul.getString(2)+"\"");
+                                                sb.append("\n");
                                                 if (resul.getInt(6) > 480)
                                                     artist_tracker.put(resul.getInt(3), (int) Math.round(length * .1));
                                                 else
@@ -428,6 +430,9 @@ public class SongTable {
                                 }
                                 catch (Exception e) {}
                             }
+                            pw.write(sb.toString());
+                            pw.close();
+                            System.out.println("playlist made");
                         }
                         catch (IOException e){}
                     }
