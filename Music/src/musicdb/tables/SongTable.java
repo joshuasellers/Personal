@@ -283,63 +283,145 @@ public class SongTable {
                                 try {
                                     if (resul.getInt(1)==id) {
                                         if (!artist_tracker.containsKey(id)) {
-                                            String query3 = "SELECT ARTIST_NAME FROM artists " +
-                                                    "WHERE ARTIST_INDEX =" + resul.getInt(3);
-                                            Statement st = conn.createStatement();
-                                            ResultSet resu = stmt.executeQuery(query3);
-                                            resu.next();
-                                            fileWriter.append(resu.getString(1));
-                                            fileWriter.append(COMMA_DELIMITER);
-                                            fileWriter.append(resul.getString(2));
-                                            fileWriter.append(NEW_LINE_SEPARATOR);
-                                            if (resul.getInt(6)>480) artist_tracker.put(id,(int)Math.round(length*.1));
-                                            else artist_tracker.put(id,1);
-                                            counter++;
+                                            if (!year_tracker.containsKey(year)) {
+                                                String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                        "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                                Statement st = conn.createStatement();
+                                                ResultSet resu = stmt.executeQuery(query3);
+                                                resu.next();
+                                                fileWriter.append(resu.getString(1));
+                                                fileWriter.append(COMMA_DELIMITER);
+                                                fileWriter.append(resul.getString(2));
+                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                if (resul.getInt(6) > 480)
+                                                    artist_tracker.put(id, (int) Math.round(length * .1));
+                                                else artist_tracker.put(id, 1);
+                                                year_tracker.put(year,1);
+                                                counter++;
+                                            }
+                                            else if (year_tracker.get(year)<length*.25){
+                                                String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                        "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                                Statement st = conn.createStatement();
+                                                ResultSet resu = stmt.executeQuery(query3);
+                                                resu.next();
+                                                fileWriter.append(resu.getString(1));
+                                                fileWriter.append(COMMA_DELIMITER);
+                                                fileWriter.append(resul.getString(2));
+                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                if (resul.getInt(6) > 480)
+                                                    artist_tracker.put(id, (int) Math.round(length * .1));
+                                                else artist_tracker.put(id, 1);
+                                                year_tracker.replace(year,year_tracker.get(year)+1);
+                                                counter++;
+                                            }
                                         }
                                         else if (artist_tracker.containsKey(id) && artist_tracker.get(id) < length*.1){
-                                            String query3 = "SELECT ARTIST_NAME FROM artists " +
-                                                    "WHERE ARTIST_INDEX =" + resul.getInt(3);
-                                            Statement st = conn.createStatement();
-                                            ResultSet resu = stmt.executeQuery(query3);
-                                            resu.next();
-                                            fileWriter.append(resu.getString(1));
-                                            fileWriter.append(COMMA_DELIMITER);
-                                            fileWriter.append(resul.getString(2));
-                                            fileWriter.append(NEW_LINE_SEPARATOR);
-                                            if (resul.getInt(6)>480) artist_tracker.put(id,(int)Math.round(length*.1));
-                                            else artist_tracker.replace(id,artist_tracker.get(id)+1);
-                                            counter++;
+                                            if (!year_tracker.containsKey(year)) {
+                                                String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                        "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                                Statement st = conn.createStatement();
+                                                ResultSet resu = stmt.executeQuery(query3);
+                                                resu.next();
+                                                fileWriter.append(resu.getString(1));
+                                                fileWriter.append(COMMA_DELIMITER);
+                                                fileWriter.append(resul.getString(2));
+                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                if (resul.getInt(6) > 480)
+                                                    artist_tracker.put(id, (int) Math.round(length * .1));
+                                                else artist_tracker.replace(id, artist_tracker.get(id) + 1);
+                                                counter++;
+                                                year_tracker.put(year,1);
+                                            }
+                                            else if (year_tracker.get(year)<length*.25){
+                                                String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                        "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                                Statement st = conn.createStatement();
+                                                ResultSet resu = stmt.executeQuery(query3);
+                                                resu.next();
+                                                fileWriter.append(resu.getString(1));
+                                                fileWriter.append(COMMA_DELIMITER);
+                                                fileWriter.append(resul.getString(2));
+                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                if (resul.getInt(6) > 480)
+                                                    artist_tracker.put(id, (int) Math.round(length * .1));
+                                                else artist_tracker.replace(id, artist_tracker.get(id) + 1);
+                                                counter++;
+                                                year_tracker.replace(year,year_tracker.get(year)+1);
+                                            }
                                         }
                                         else continue;
                                     }
                                     else {
                                         if (!artist_tracker.containsKey(resul.getInt(3))) {
-                                            String query3 = "SELECT ARTIST_NAME FROM artists " +
-                                                    "WHERE ARTIST_INDEX =" + resul.getInt(3);
-                                            Statement st = conn.createStatement();
-                                            ResultSet resu = stmt.executeQuery(query3);
-                                            resu.next();
-                                            fileWriter.append(resu.getString(1));
-                                            fileWriter.append(COMMA_DELIMITER);
-                                            fileWriter.append(resul.getString(2));
-                                            fileWriter.append(NEW_LINE_SEPARATOR);
-                                            if (resul.getInt(6)>480) artist_tracker.put(resul.getInt(3),(int)Math.round(length*.1));
-                                            else artist_tracker.put(resul.getInt(3),1);
-                                            counter++;
+                                            if (!year_tracker.containsKey(year)) {
+                                                String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                        "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                                Statement st = conn.createStatement();
+                                                ResultSet resu = stmt.executeQuery(query3);
+                                                resu.next();
+                                                fileWriter.append(resu.getString(1));
+                                                fileWriter.append(COMMA_DELIMITER);
+                                                fileWriter.append(resul.getString(2));
+                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                if (resul.getInt(6) > 480)
+                                                    artist_tracker.put(resul.getInt(3), (int) Math.round(length * .1));
+                                                else artist_tracker.put(resul.getInt(3), 1);
+                                                counter++;
+                                                year_tracker.put(year,1);
+                                            }
+                                            else if (year_tracker.get(year)<length*.25){
+                                                String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                        "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                                Statement st = conn.createStatement();
+                                                ResultSet resu = stmt.executeQuery(query3);
+                                                resu.next();
+                                                fileWriter.append(resu.getString(1));
+                                                fileWriter.append(COMMA_DELIMITER);
+                                                fileWriter.append(resul.getString(2));
+                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                if (resul.getInt(6) > 480)
+                                                    artist_tracker.put(resul.getInt(3), (int) Math.round(length * .1));
+                                                else artist_tracker.put(resul.getInt(3), 1);
+                                                counter++;
+                                                year_tracker.replace(year,year_tracker.get(year)+1);
+                                            }
                                         }
                                         else if (artist_tracker.containsKey(resul.getInt(3)) && artist_tracker.get(resul.getInt(3)) < length*.1){
-                                            String query3 = "SELECT ARTIST_NAME FROM artists " +
-                                                    "WHERE ARTIST_INDEX =" + resul.getInt(3);
-                                            Statement st = conn.createStatement();
-                                            ResultSet resu = stmt.executeQuery(query3);
-                                            resu.next();
-                                            fileWriter.append(resu.getString(1));
-                                            fileWriter.append(COMMA_DELIMITER);
-                                            fileWriter.append(resul.getString(2));
-                                            fileWriter.append(NEW_LINE_SEPARATOR);
-                                            if (resul.getInt(6)>480) artist_tracker.put(resul.getInt(3),(int)Math.round(length*.1));
-                                            else artist_tracker.replace(resul.getInt(3),artist_tracker.get(id)+1);
-                                            counter++;
+                                            if (!year_tracker.containsKey(year)) {
+                                                String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                        "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                                Statement st = conn.createStatement();
+                                                ResultSet resu = stmt.executeQuery(query3);
+                                                resu.next();
+                                                fileWriter.append(resu.getString(1));
+                                                fileWriter.append(COMMA_DELIMITER);
+                                                fileWriter.append(resul.getString(2));
+                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                if (resul.getInt(6) > 480)
+                                                    artist_tracker.put(resul.getInt(3), (int) Math.round(length * .1));
+                                                else
+                                                    artist_tracker.replace(resul.getInt(3), artist_tracker.get(id) + 1);
+                                                counter++;
+                                                year_tracker.put(year,1);
+                                            }
+                                            else if (year_tracker.get(year)<length*.25){
+                                                String query3 = "SELECT ARTIST_NAME FROM artists " +
+                                                        "WHERE ARTIST_INDEX =" + resul.getInt(3);
+                                                Statement st = conn.createStatement();
+                                                ResultSet resu = stmt.executeQuery(query3);
+                                                resu.next();
+                                                fileWriter.append(resu.getString(1));
+                                                fileWriter.append(COMMA_DELIMITER);
+                                                fileWriter.append(resul.getString(2));
+                                                fileWriter.append(NEW_LINE_SEPARATOR);
+                                                if (resul.getInt(6) > 480)
+                                                    artist_tracker.put(resul.getInt(3), (int) Math.round(length * .1));
+                                                else
+                                                    artist_tracker.replace(resul.getInt(3), artist_tracker.get(id) + 1);
+                                                counter++;
+                                                year_tracker.replace(year,year_tracker.get(year)+1);
+                                            }
                                         }
                                         else continue;
                                     }
