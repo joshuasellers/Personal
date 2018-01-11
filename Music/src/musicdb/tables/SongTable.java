@@ -430,6 +430,109 @@ public class SongTable {
                                 }
                                 catch (Exception e) {}
                             }
+                            if (counter < length){
+                                String query4 = "SELECT * FROM songs " +
+                                        "WHERE DATE_ADDED =\""+date_added+"\" OR LAST_PLAYED =\""+last_played+ "\" " +
+                                        "ORDER BY PLAYS ASC, (SKIPS/PLAYS) ASC";
+                                Statement sts = conn.createStatement();
+                                ResultSet reu = sts.executeQuery(query4);
+                                while (reu.next() && counter < length){
+                                    if (!sb.toString().contains(reu.getString(2))) {
+                                        String query5 = "SELECT ARTIST_NAME FROM artists " +
+                                                "WHERE ARTIST_INDEX =" + reu.getInt(3);
+                                        Statement sst = conn.createStatement();
+                                        ResultSet ressu = sst.executeQuery(query5);
+                                        ressu.next();
+                                        sb.append("\"" + ressu.getString(1) + "\"");
+                                        sb.append(",");
+                                        sb.append("\"" + reu.getString(2) + "\"");
+                                        sb.append("\n");
+                                        counter++;
+                                    }
+                                }
+                            }
+                            if (counter < length) return;
+                            int feat = 0;
+                            if (song.contains("feat.") ||song.contains("ft.") ||song.contains("Feat.")
+                                    ||song.contains("FEAT.") ||song.contains("Ft.") ||song.contains("FT.")
+                                    ||song.contains("featuring") ||song.contains("Featuring")){
+                                int ind = Math.max(song.indexOf("Featuring."),Math.max(song.indexOf("featuring"),Math.max(song.indexOf("FT."),Math.max(song.indexOf("Ft."),Math.max(song.indexOf("FEAT."),Math.max(song.indexOf("Feat."),Math.max(song.indexOf("feat."),song.indexOf("ft."))))))));
+                                String featuring = song.substring(ind);
+                                String ft = featuring.replace(")","").replace("(","").replace("[", "").replace("]","");
+                                String tf = ft.replaceAll("'", "''");
+                                String ftt = tf.replaceAll("\\.0*$", "");
+                                ftt = ftt.replace("feat. ", "");
+                                String[] artists = ftt.split(",");
+                                List<String> list = new ArrayList<String>(Arrays.asList(artists));
+                                String[] art = new String[list.size()];
+                                list.toArray(art);
+                                int c = 0;
+                                int cc = 0;
+                                while (feat < length * .1 && cc < length*10){
+                                    if (c>=art.length) c=0;
+
+                                    String q = "SELECT * FROM artists WHERE ARTIST_NAME = \'" +art[c] + "\'";
+                                    Statement sp = conn.createStatement();
+                                    ResultSet ps = sp.executeQuery(q);
+                                    ps.next();
+                                    String query8 = "SELECT * FROM songs " +
+                                            "WHERE ARTIST_ID =  "+ ps.getInt(1) + " " +
+                                            "ORDER BY PLAYS ASC, (SKIPS/PLAYS) ASC";
+                                    Statement state = conn.createStatement();
+                                    ResultSet resu = state.executeQuery(query8);
+                                    boolean br = false;
+                                    while (resu.next() && !br){
+                                        if (!sb.toString().contains(resu.getString(2))){
+                                            sb.append("\"" + art[c] + "\"");
+                                            sb.append(",");
+                                            sb.append("\"" + resu.getString(2) + "\"");
+                                            sb.append("\n");
+                                            feat++;
+                                        }
+                                    }
+                                    c++;
+                                    cc++;
+                                }
+                            }
+                            String query6 = "SELECT ARTIST_NAME FROM artists " +
+                                    "WHERE ARTIST_INDEX =" + artist_id;
+                            Statement sttt = conn.createStatement();
+                            ResultSet resssu = sttt.executeQuery(query6);
+                            resssu.next();
+                            String artist = resssu.getString(1);
+                            if (artist.contains("feat.") ||artist.contains("ft.") ||artist.contains("Feat.")
+                                    ||artist.contains("FEAT.") ||artist.contains("Ft.") ||artist.contains("FT.")
+                                    ||artist.contains("featuring") ||artist.contains("Featuring")){
+                                int ind = Math.max(artist.indexOf("Featuring."),Math.max(artist.indexOf("featuring"),Math.max(artist.indexOf("FT."),Math.max(artist.indexOf("Ft."),Math.max(artist.indexOf("FEAT."),Math.max(artist.indexOf("Feat."),Math.max(artist.indexOf("feat."),artist.indexOf("ft."))))))));
+                                String featuring = artist.substring(ind);
+                                String ft = featuring.replace(")"," ").replace("("," ").replace("[", " ").replace("]"," ");
+                                String tf = ft.replaceAll("'", "''");
+                                String ftt = tf.replaceAll("\\.0*$", "");
+                                String[] artists = ftt.split(",");
+                                List<String> list = new ArrayList<String>(Arrays.asList(artists));
+                                list.remove(0);
+                                String[] art = new String[list.size()];
+                                list.toArray(art);
+                                int c = 0;
+                                while (feat < length * .1){
+                                    if (c>=art.length) c=0;
+                                    String query8 = "SELECT * FROM songs " +
+                                            "WHERE ARTIST_ID = (SELECT ARTIST_INDEX from artists WHERE ARTIST_NAME = \"" +art[c] + "\")"+
+                                            "ORDER BY PLAYS ASC, (SKIPS/PLAYS) ASC";
+                                    Statement state = conn.createStatement();
+                                    ResultSet resu = state.executeQuery(query8);
+                                    boolean br = false;
+                                    while (resu.next() && !br){
+                                        if (!sb.toString().contains(resu.getString(2))){
+                                            sb.append("\"" + art[c] + "\"");
+                                            sb.append(",");
+                                            sb.append("\"" + resu.getNString(2) + "\"");
+                                            sb.append("\n");
+                                        }
+                                    }
+                                    c++;
+                                }
+                            }
                             pw.write(sb.toString());
                             pw.close();
                             System.out.println("playlist made");
