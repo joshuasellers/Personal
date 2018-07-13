@@ -6,5 +6,6 @@ Clone the projects to run them
 The projects are:
 - Music: a playlist making application
 - BlockSoln: an example of the backtracking algorithm
+- RN - Basic calculator that uses roman numerals 
 ## History
 See commit log for history
