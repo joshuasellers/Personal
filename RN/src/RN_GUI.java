@@ -12,26 +12,17 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 
 public class RN_GUI extends Application {
-    private RNMain backend = new RNMain();
     public static void main(String[] args) {
         launch(args);
     }
 
-    @Override
-    public void start(Stage primaryStage) {
-        // Title /////////////////////////////////////////////
-        primaryStage.setTitle("Roman Numeral Calculator"); //
-        /////////////////////////////////////////////////////
-
+    public static Scene getScene(){
         // GridPane ////////////////////////////////////
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.TOP_LEFT);
@@ -51,13 +42,7 @@ public class RN_GUI extends Application {
         grid.getColumnConstraints().addAll(column1, column2, column3, column4, column5);
         Scene scene = new Scene(grid, 500, 375);
         grid.setStyle("-fx-background-color: #C0C0C0;");
-        primaryStage.setScene(scene);
-        //grid.setGridLinesVisible(true);
-        ////////////////////////////////////////////////
 
-
-
-        // Example Interface //
         Label scenetitle = new Label("XVI-84 Plus");
         scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(scenetitle, 0, 0);
@@ -70,13 +55,15 @@ public class RN_GUI extends Application {
         GridPane.setColumnSpan(sepHor1, GridPane.REMAINING);
         grid.getChildren().add(sepHor1);
 
-        Label eqn = new Label("Enter Equation:");
+        Label eqn = new Label("Intrabit Equation:");
         eqn.setFont(Font.font("Tahoma",FontWeight.NORMAL,20));
         grid.setColumnSpan(eqn,2);
         grid.add(eqn, 0, 2);
         GridPane.setHalignment(eqn, HPos.CENTER);
 
         TextField userTextField = new TextField();
+        userTextField.setDisable(true);
+        userTextField.setStyle("-fx-opacity: 1;");
         grid.setColumnSpan(userTextField,GridPane.REMAINING);
         grid.add(userTextField, 2, 2);
 
@@ -92,9 +79,25 @@ public class RN_GUI extends Application {
         VBox vBox = new VBox(10);
         vBox.setPrefWidth(80);
         Button btnq = new Button("(");
+        btnq.setDisable(true);
         btnq.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btnq.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"( ");
+            }
+        });
         Button btnw = new Button(")");
+        btnw.setDisable(true);
         btnw.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btnw.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+") ");
+            }
+        });
         btnq.setMinWidth(vBox.getPrefWidth());
         btnw.setMinWidth(vBox.getPrefWidth());
         vBox.getChildren().addAll(btnq,btnw);
@@ -103,12 +106,40 @@ public class RN_GUI extends Application {
         vBox1.setPrefWidth(90);
         Button btn1 = new Button("+");
         btn1.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btn1.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"+ ");
+            }
+        });
         Button btn2 = new Button("-");
         btn2.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        Button btn3 = new Button("*");
+        btn2.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"- ");
+            }
+        });
+        Button btn3 = new Button("x");
         btn3.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btn3.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"x ");
+            }
+        });
         Button btn4 = new Button("/");
         btn4.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btn4.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"/ ");
+            }
+        });
         btn1.setMinWidth(vBox1.getPrefWidth());
         btn2.setMinWidth(vBox1.getPrefWidth());
         btn3.setMinWidth(vBox1.getPrefWidth());
@@ -128,12 +159,40 @@ public class RN_GUI extends Application {
         vBox2.setPrefWidth(90);
         Button btna = new Button("I");
         btna.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btna.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"I ");
+            }
+        });
         Button btnb = new Button("V");
         btnb.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btnb.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"V ");
+            }
+        });
         Button btnc = new Button("X");
         btnc.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btnc.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"X ");
+            }
+        });
         Button btnd = new Button("L");
         btnd.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btnd.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"L ");
+            }
+        });
         btna.setMinWidth(vBox2.getPrefWidth());
         btnb.setMinWidth(vBox2.getPrefWidth());
         btnc.setMinWidth(vBox2.getPrefWidth());
@@ -144,10 +203,31 @@ public class RN_GUI extends Application {
         vBox3.setPrefWidth(90);
         Button btni = new Button("C");
         btni.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btni.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"C ");
+            }
+        });
         Button btnj = new Button("D");
         btnj.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btnj.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"D ");
+            }
+        });
         Button btnk = new Button("M");
         btnk.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        btnk.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText(userTextField.getText()+"M ");
+            }
+        });
         btni.setMinWidth(vBox2.getPrefWidth());
         btnj.setMinWidth(vBox2.getPrefWidth());
         btnk.setMinWidth(vBox2.getPrefWidth());
@@ -171,28 +251,47 @@ public class RN_GUI extends Application {
         GridPane.setColumnSpan(sepHor3, GridPane.REMAINING);
         grid.getChildren().add(sepHor3);
 
+
+        HBox bottom = new HBox(10);
+        bottom.setPrefWidth(100);
+
         Button eq = new Button("=");
         eq.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.setColumnSpan(eq,GridPane.REMAINING);
-        grid.add(eq,0,10);
-        GridPane.setHalignment(eq, HPos.CENTER);
-        /*
-
-        final Text actiontarget = new Text();
-        grid.add(actiontarget, 0, 6);
-        grid.setColumnSpan(actiontarget, 2);
-        grid.setHalignment(actiontarget, HPos.RIGHT);
-        actiontarget.setId("actiontarget");
-
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+        eq.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
-            public void handle(ActionEvent e) {
-                actiontarget.setFill(Color.FIREBRICK);
-                actiontarget.setText("Sign in button pressed");
+            public void handle(ActionEvent event) {
+                String[] arguments = userTextField.getText().split(" ");
+                RNCalc calc = new RNCalc(arguments[0],arguments[2],arguments[1]);
+                userTextField.setText(calc.getOutput());
             }
         });
-        */
+
+        Button clear = new Button("DELENS");
+        clear.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        clear.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                userTextField.setText("");
+            }
+        });
+
+        bottom.getChildren().addAll(eq,clear);
+        grid.setColumnSpan(bottom,2);
+        grid.add(bottom,3,10);
+        GridPane.setHalignment(bottom, HPos.CENTER);
+
+        return scene;
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        // Title /////////////////////////////////////////////
+        primaryStage.setTitle("Roman Numeral Calculator"); //
+        /////////////////////////////////////////////////////
+        Scene scene = getScene();
+        primaryStage.setScene(scene);
         // Display /////////////
         primaryStage.show(); //
         ///////////////////////
