@@ -19,11 +19,12 @@
 #define fivek 3.1
 
 float Race_Time(float dist, float split){
+  int seconds =
   return (split * dist);
 }
 
 float Race_Split(float dist, float time){
-  return (dist/time);
+  return (time/dist);
 }
 
 int main(int argc, char const *argv[]) {
@@ -31,15 +32,14 @@ int main(int argc, char const *argv[]) {
 	This is MileSplits' main function.  It takes in three args and outputs the mile
   splits or times depending on the input.
 	*/
+  //TODO make strings for the argvs and interate through them
   printf("argc = %d\n", argc);
   if(argc == 4){
     if (strcmp(argv[0],"split")) {
-      printf("%s\n", argv[1]);
-      printf("%f\n", Race_Split(atof(argv[1]),atof(argv[2])));
+      printf("Your mile split for %s miles over %s minutes is %.2f\n", argv[2],argv[3], Race_Split(atof(argv[2]),atof(argv[3])));
     }
     else if (strcmp(argv[0],"time")){
-      printf("%s\n", argv[1]);
-      printf("%f\n", Race_Time(atof(argv[1]),atof(argv[2])));
+      printf("Your time for %s miles with a split of %s is %.2f\n", argv[2],argv[3], Race_Time(atof(argv[2]),atof(argv[3])));
     }
     else{
       return EXIT_FAILURE;
