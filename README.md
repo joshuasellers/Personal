@@ -9,5 +9,6 @@ The projects are:
 - Roman Numeral Calc: Basic calculator that uses roman numerals 
 - MileSplits: C progrma that calculates various running conversions
 - Baseball Project: modeling project for baseball player value
+- Insta_phots: an attempt at image recognition
 ## History
 See commit log for history
