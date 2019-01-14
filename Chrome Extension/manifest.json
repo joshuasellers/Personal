@@ -1,6 +1,6 @@
   {
-    "name": "Getting Started Example",
+    "name": "YouTube Use Tracker",
     "version": "1.0",
-    "description": "Build an Extension!",
-    "manifest_version": 2
+    "description": "Tracks time spent on YouTube to improve productivity.",
+    "manifest_version": 1
   }
