@@ -1,6 +1,6 @@
   {
     "name": "YouTube Use Tracker",
-    "version": "1.0",
+    "version": "2.0",
     "description": "Tracks time spent on YouTube to improve productivity.",
     "background": {
       "scripts": ["background.js"],
