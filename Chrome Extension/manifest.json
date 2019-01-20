@@ -4,9 +4,9 @@
     "description": "Tracks time spent on YouTube to improve productivity.",
     "background": {
       "scripts": ["background.js"],
-      "persistent": false
+      "persistent": true
      },
-    "permissions": ["activeTab", "declarativeContent", "storage"],
+    "permissions": ["activeTab", "declarativeContent", "storage", "tabs"],
     "options_page": "options.html",
     "page_action": {
       "default_popup": "popup.html",
