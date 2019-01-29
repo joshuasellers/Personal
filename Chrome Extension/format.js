@@ -11,4 +11,3 @@ function FormatTime(time) {
   return Math.floor(seconds / 60) + ":" + pad(Math.floor((time % 60)));
 }
 
-exports.FormatTime = FormatTime;
