@@ -20,23 +20,15 @@ function(tab)
 chrome.tabs.onUpdated.addListener(
 function(tabId, changeInfo, tab) 
 {
-	//chrome.tabs.query(
-	//		{
-	//		    active: true,               // Select active tabs
-	//		    lastFocusedWindow: true
-	//		}, 
-	//function(tabs) 
-	//{
-		var tabID = tabId;//tabs[0].id;
-		var url = changeInfo.url;//tabs[0].url;
-		//var wt = tabs[0].windowType;
-		if (url != null && url.includes("youtube.com")) {
-			console.log("youtube!");
-			console.log(url);
-			timers[tabID] = new Date();
-			console.log(timers);
-			var time = FormatTime(timers)
-			console.log(time);
-		};
-	//});
+	var tabID = tabId;
+	var url = changeInfo.url;
+	if (url != null && url.includes("youtube.com")) {
+		console.log("youtube!");
+		console.log(url);
+		timers[tabID] = new Date();
+		var time = GetTime(timers)
+		console.log(time);
+		var format = FormatTime(time);
+		console.log(format)
+	};
 });
