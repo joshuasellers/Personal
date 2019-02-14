@@ -30,10 +30,11 @@ function(tabId, changeInfo, tab)
 		var tabID = tabId;//tabs[0].id;
 		var url = changeInfo.url;//tabs[0].url;
 		//var wt = tabs[0].windowType;
-		console.log(url);
-		if (url.includes("youtube.com")) {
+		if (url != null && url.includes("youtube.com")) {
 			console.log("youtube!");
+			console.log(url);
 			timers[tabID] = new Date();
+			console.log(timers);
 			var time = FormatTime(timers)
 			console.log(time);
 		};

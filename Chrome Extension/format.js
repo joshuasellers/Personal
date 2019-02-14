@@ -4,13 +4,14 @@ function FormatTime(times) {
 	var x;
 	var time = 0;
 	var curr = 0;
+	var i = 0;
 	for (x in times) {
 		if (curr == 0){
-			curr = x;
+			curr = times[x];
 		}
 		else{
-			time += x - curr;
-			curr = x;
+			time += times[x] - curr;
+			curr = times[x];
 		}
 	}
 	return time;
