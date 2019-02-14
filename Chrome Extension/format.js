@@ -6,13 +6,7 @@ function GetTime(times) {
 	var curr = 0;
 	var i = 0;
 	for (x in times) {
-		if (curr == 0){
-			curr = times[x];
-		}
-		else{
-			time += times[x] - curr;
-			curr = times[x];
-		}
+		time += times[x];
 	}
 	return time;
 };
