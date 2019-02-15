@@ -2,6 +2,10 @@
 Used online button maker to get gradient
 */
 .reset{
+	width: 50%;
+	margin-left: 25%;
+	margin-right: 25%
+
 	border:1px solid #df0909;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -31,4 +35,23 @@ Used online button maker to get gradient
 	background-image: -o-linear-gradient(top, #e40a0a, #9f0202);
 	background-image: linear-gradient(to bottom, #e40a0a, #9f0202);
 	filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#e40a0a, endColorstr=#9f0202);
+}
+
+.txt{
+	text-align: center;
+
+	font-family: "Lucida Console", Monaco, monospace;
+	font-size: 27px;
+	letter-spacing: 2px;
+	word-spacing: 2px;
+	
+	font-weight: 700;
+	text-decoration: none solid rgb(68, 68, 68);
+	font-style: normal;
+	font-variant: normal;
+	text-transform: uppercase;
+
+	color: #FFFFFF;
+	background: #000000;
+	text-shadow: 0 1px 0 #CCCCCC, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15);
 }
