@@ -26,19 +26,3 @@ function myTimer() {
 		chrome.browserAction.setBadgeText({text: time});
 	}
 }
-
-
-
-/*
-var yt = chrome.extension.getBackgroundPage().inYouTube;
-var currentTime = new Date();
-while (yt){
-	if(new Date() - currentTime > 1000)
-	{
-	  	let clock = document.getElementById('clock');
-		clock.textContent = bgPage.updateTime();
-	}
-	currentTime = new Date();
-	yt = chrome.extension.getBackgroundPage().inYouTube;
-}
-*/
