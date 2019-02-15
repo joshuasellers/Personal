@@ -4,6 +4,8 @@
 var timers = [];
 var inYouTube = false;
 var curr = 0;
+var current_time = 0;
+var current_format = "00:00";
 
 chrome.tabs.onUpdated.addListener(
 function(tabId, changeInfo, tab) 
@@ -15,10 +17,10 @@ function(tabId, changeInfo, tab)
 		if (inYouTube){
 			console.log("Get time for updated");
 			timers[curr] = new Date() - timers[curr];
-			var time = GetTime(timers)
-			console.log(time);
-			var format = FormatTime(time);
-			console.log(format)
+			current_time = GetTime(timers);
+			console.log(current_time);
+			current_format = FormatTime(current_time);
+			console.log(current_format);
 			inYouTube = false;
 		}
 		if (url != null && url.includes("youtube.com")) {

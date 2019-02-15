@@ -3,15 +3,17 @@
 let resetTime = document.getElementById('resetTimer');
 
 resetTime.onclick = function() {
-  chrome.extension.getBackgroundPage().timers = [];
-  chrome.extension.getBackgroundPage().inYouTube = false;
-  chrome.extension.getBackgroundPage().curr = 0;
+	chrome.extension.getBackgroundPage().timers = [];
+	chrome.extension.getBackgroundPage().inYouTube = false;
+	chrome.extension.getBackgroundPage().curr = 0;
+	chrome.extension.getBackgroundPage().current_timer = 0;
+	chrome.extension.getBackgroundPage().current_format = "";
+	console.log("reset")
 };
 
-let getTime = document.getElementById('getTimer');
+let getTime = document.getElementById('getTime');
 
 getTime.onclick = function() {
-  chrome.extension.getBackgroundPage().timers = [];
-  chrome.extension.getBackgroundPage().inYouTube = false;
-  chrome.extension.getBackgroundPage().curr = 0;
+	var time = chrome.extension.getBackgroundPage().current_format;
+	chrome.browserAction.setBadgeText({text: time});
 };
