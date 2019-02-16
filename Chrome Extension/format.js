@@ -1,16 +1,5 @@
 'use strict';
 
-function GetTime(times) {
-	var x;
-	var time = 0;
-	var curr = 0;
-	var i = 0;
-	for (x in times) {
-		time += times[x];
-	}
-	return time;
-};
-
 // source: https://github.com/google/page-timer/blob/master/background.js
 function FormatTime(time) {
   if (time < 0) {
