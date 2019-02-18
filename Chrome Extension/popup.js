@@ -25,3 +25,17 @@ function myTimer() {
 	document.getElementById("clock").textContent = bgPage.updateTime();
 	var time = bgPage.updateTime();
 }
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.msg === "LIMIT") {
+        	clearInterval(myVar);
+            chrome.extension.getBackgroundPage().inYouTube = false;
+			chrome.extension.getBackgroundPage().curr_time = 0;
+			chrome.extension.getBackgroundPage().curr_date = 0;
+			chrome.extension.getBackgroundPage().warned = false;
+			chrome.extension.getBackgroundPage().limit = -1;
+			document.getElementById("clock").textContent = "LIMIT";
+        }
+    }
+);

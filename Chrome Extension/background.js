@@ -12,6 +12,7 @@ chrome.tabs.onActivated.addListener(
 	{
 		var tabID = activeINFO.tabId;
 		var windowID = activeINFO.windowId;
+		checkLimit();
 		chrome.tabs.get(tabID, function (tab)
 			{
 				var url = tab.url;
@@ -26,6 +27,7 @@ chrome.tabs.onActivated.addListener(
 					if (inYouTube){
 						curr_time += new Date() - curr_date;
 						curr_date = 0;
+						checkLimit();
 					}
 					else{
 						curr_date = 0;
@@ -41,6 +43,7 @@ chrome.tabs.onUpdated.addListener(
 		if (changeInfo.status == "complete"){
 			var tabID = tabId;
 			var url = tab.url;
+			checkLimit();
 			if (url != null && url.includes("youtube.com")) {
 					if (inYouTube){
 						curr_time += new Date() - curr_date;
@@ -62,15 +65,28 @@ chrome.tabs.onUpdated.addListener(
 	});
 
 function updateTime(){
-	if (!warned && limit >= 0){
-		warned = true;
-	}
 	if (inYouTube){
 		curr_time += new Date() - curr_date;
 		curr_date = new Date();
+		console.log(limit);
+		checkLimit();
 		return FormatTime(curr_time);
 	}
 	else{
 		return FormatTime(curr_time);
+	}
+}
+
+function checkLimit(){
+	console.log("check")
+	if (!warned && limit >= 0){
+		console.log("checking");
+		if(curr_time >= limit){
+			console.log("limit")
+			warned = true;
+			chrome.runtime.sendMessage({
+			    msg: "LIMIT", 
+			});
+		}
 	}
 }
