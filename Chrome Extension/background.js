@@ -78,16 +78,10 @@ function updateTime(){
 }
 
 function checkLimit(){
-	console.log("check")
 	if (!warned && limit >= 0){
-		console.log("checking");
 		if(curr_time >= limit){
-			console.log("limit")
 			window.alert("YouTube usage time limit reached!!!");
 			warned = true;
-			chrome.runtime.sendMessage({
-			    msg: "LIMIT", 
-			});
 		}
 	}
 }
