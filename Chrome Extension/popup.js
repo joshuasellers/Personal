@@ -8,6 +8,13 @@ resetTime.onclick = function() {
 	chrome.extension.getBackgroundPage().curr_date = 0;
 };
 
+let setTime = document.getElementById('setTime');
+
+setTime.onclick = function() {
+	let hours = document.getElementById('hrs');
+	let minutes = document.getElementById('mins');
+}
+
 var myVar = setInterval(myTimer, 1000);
 
 function myTimer() {

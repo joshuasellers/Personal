@@ -4,6 +4,8 @@ var timers = [];
 var inYouTube = false;
 var curr_time = 0;
 var curr_date = 0;
+var warned = false;
+
 
 chrome.tabs.onActivated.addListener(
 	function (activeINFO)
