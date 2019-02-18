@@ -1,25 +1,21 @@
 'use strict';
 
-var timers = [];
 var inYouTube = false;
 var curr_time = 0;
 var curr_date = 0;
 var warned = false;
+var limit = -1;
 
 
 chrome.tabs.onActivated.addListener(
 	function (activeINFO)
 	{
-		console.log("Activated");
 		var tabID = activeINFO.tabId;
 		var windowID = activeINFO.windowId;
 		chrome.tabs.get(tabID, function (tab)
 			{
-				console.log("New Tab Chosen");
-				console.log(tab.url);
 				var url = tab.url;
 				if (url != null && url.includes("youtube.com")) {
-					console.log("youtube");
 					if (inYouTube){
 						curr_time += new Date() - curr_date;
 					}
@@ -27,7 +23,6 @@ chrome.tabs.onActivated.addListener(
 					curr_date = new Date();
 				}
 				else{
-					console.log("not youtube");
 					if (inYouTube){
 						curr_time += new Date() - curr_date;
 						curr_date = 0;
@@ -44,12 +39,9 @@ chrome.tabs.onUpdated.addListener(
 	function(tabId, changeInfo, tab) 
 	{
 		if (changeInfo.status == "complete"){
-			console.log("Updated Tab");
-			console.log(tab.url);
 			var tabID = tabId;
 			var url = tab.url;
 			if (url != null && url.includes("youtube.com")) {
-					console.log("youtube");
 					if (inYouTube){
 						curr_time += new Date() - curr_date;
 					}
@@ -57,7 +49,6 @@ chrome.tabs.onUpdated.addListener(
 					curr_date = new Date();
 				}
 			else{
-				console.log("not youtube");
 				if (inYouTube){
 					curr_time += new Date() - curr_date;
 					curr_date = 0;
@@ -71,6 +62,9 @@ chrome.tabs.onUpdated.addListener(
 	});
 
 function updateTime(){
+	if (!warned && limit >= 0){
+		warned = true;
+	}
 	if (inYouTube){
 		curr_time += new Date() - curr_date;
 		curr_date = new Date();
