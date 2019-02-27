@@ -18,18 +18,6 @@ setTime.onclick = function() {
 	chrome.extension.getBackgroundPage().limit = 3600000 * hours + 60000 * minutes;
 }
 
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        if (request.msg === "LIMIT") {
-            chrome.extension.getBackgroundPage().inYouTube = false;
-			chrome.extension.getBackgroundPage().curr_time = 0;
-			chrome.extension.getBackgroundPage().curr_date = 0;
-			chrome.extension.getBackgroundPage().warned = false;
-			chrome.extension.getBackgroundPage().limit = -1;
-        }
-    }
-);
-
 var myVar = setInterval(myTimer, 1000);
 
 function myTimer() {
