@@ -40,15 +40,13 @@ data Suit = Clubs | Diamonds | Hearts | Spades
      Hearts   -> " ♡"
      Spades   -> " ♤"
 
-data Card = Card {rank :: Rank, suit :: Suit} 
+data Card = Card {_rank :: Rank, _suit :: Suit} 
  deriving (Eq)
   instance Ord Card where
     (Card r1 _) `compare` (Card r2 _) = r1 `compare` r2
   instance Show Card where
     show (Card r s) = show r ++ show s
-  instance Applicative Card where
-      pure r s = Card {rank :: r, suit :: s}
-      fc <*> cs = fmap fc cs
+
 
 -- DECK
 -- I actuall don't think deck should be a type, make it a list that can be defined by the user
@@ -67,6 +65,7 @@ data Dealer = Dealer {_deck :: [Card], _discard :: [Card]}
 -- This one might also be defined by the user
 
 -- data ScoreCard = [(Int, Int)]
+
 
 
 

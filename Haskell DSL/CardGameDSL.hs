@@ -14,9 +14,26 @@ import Data.Maybe
 
 import CardGameDSL.Types
 
-{- Cards -}
+{- Deck Functions -}
 
-deck :: [Card]
-deck = Card <$> 
+fullDeck :: [Card]
+fullDeck = Card <$> [minBound..] <*> [minBound..]
+
+initialDiscardPile :: [Card]
+initialDiscardPile = []
+
+draw :: [Card] -> Integer -> [Card]
+draw _ _ = []
+
+discard :: [Card] -> Integer -> [Card]
+discard _ _ = []
+
+-- shuffel there looks like a decent shuffle io for haskell online
+
+{- ScoreCard Functions -}
 
 
+{- Dealer Functions -}
+
+
+{- Player Functions -}
