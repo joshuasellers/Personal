@@ -55,16 +55,18 @@ data Card = Card {_rank :: Rank, _suit :: Suit}
 
 -- PLAYER
 
-data Player = Player {_ID :: Integer, _hand :: [Card], _turn :: Integer, _score :: Integer} deriving (Eq, Show)
+data Player = Player {_hand :: [Card], _turn :: Integer, _score :: Integer} deriving (Eq, Show)
 
 -- DEALER
 
-data Dealer = Dealer {_deck :: [Card], _discard :: [Card], _players = [Player], _handD = [Card]}
+data Dealer = Dealer {_deck :: [Card], _discard :: [Card], _players = [Player], _handD :: [Card], _inPlay :: [Card]}
 
 -- SCORECARD
 -- This one might also be defined by the user
 
 -- data ScoreCard = [(Int, Int)]
+
+-- Table???? TODO
 
 
 
