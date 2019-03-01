@@ -3,7 +3,7 @@ Name: Josh Sellers
 File Description: Types
 -}
 
--- {-# OPTIONS -Wall -Wno-unused-imports #-}
+{-# OPTIONS -Wall -Wno-unused-imports #-}
 
 module CardGameDSL.Types where
 
@@ -47,27 +47,22 @@ data Card = Card {_rank :: Rank, _suit :: Suit}
   instance Show Card where
     show (Card r s) = show r ++ show s
 
-
--- DECK
--- I actuall don't think deck should be a type, make it a list that can be defined by the user
-
--- data Deck = [Card]
-
 -- PLAYER
 
-data Player = Player {_hand :: [Card], _turn :: Integer, _score :: Integer} deriving (Eq, Show)
+data Player = Player {_hand :: [Card], _turn :: Integer, _score :: Integer, _id :: Integer} deriving (Eq, Show)
 
 -- DEALER
 
 data Dealer = Dealer {_deck :: [Card], _discard :: [Card], _players = [Player], _handD :: [Card], _inPlay :: [Card]}
 
--- SCORECARD
--- This one might also be defined by the user
+-- TABLE
 
--- data ScoreCard = [(Int, Int)]
+data Table = Table {_inPlay :: [Card], _pointsInPlay :: Integer}
 
--- Table???? TODO
-
-
+makeLenses ''Player
+makeLenses ''Card
+makeLenses ''Rank
+makeLenses ''Suit
+makeLenses ''Dealer
 
 

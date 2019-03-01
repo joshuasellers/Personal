@@ -1,21 +1,21 @@
 {-
 Name: Josh Sellers
-File Description: DSL
+File Description: Functions
 -}
 
 
--- {-# OPTIONS -Wall -Wno-unused-imports #-}
+{-# OPTIONS -Wall -Wno-unused-imports #-}
 
-module CardGameDSL.DSL where
+module CardGameDSL.Functions where
 
 import Data.Either
 import Data.List
 import Data.Maybe
-import System.Random
 import Data.Array.ST
 import Control.Monad
 import Control.Monad.ST
 import Data.STRef
+import System.Random
 
 import CardGameDSL.Types
 
@@ -26,8 +26,8 @@ fullDeck :: [Card]
 fullDeck = Card <$> [minBound..] <*> [minBound..]
 
 -- if you don't want a full deck
-initialDeck :: [Card] -> [Card]
-initialDeck remove = fullDeck \\ remove
+partialDeck :: [Card] -> [Card]
+partialDeck remove = fullDeck \\ remove
 
 -- empty list
 initialDiscardPile :: [Card]
@@ -35,51 +35,64 @@ initialDiscardPile = []
 
 -- draw number of cards from top of deck
 draw :: [Card] -> Integer -> [Card]
-draw _ _ = []
+draw deck 0 = []
+draw [] _ = []
+draw (d:deck) n = d : (draw deck (n-1))
+
+-- remove specific card from deck
+removeCard :: [Card] -> Card -> [Card]
+removeCard [] _ = []
+removeCard (d:deck) c 
+    | d == c    = [d]
+    | otherwise = removeCard deck c
 
 -- draw specific cards from deck
 drawSpecific :: [Card] -> [Card] -> [Card]
-drawSpecific _ _ = []
+drawSpecific _ [] = []
+drawSpecific [] _ = []
+drawSpecific deck (c:cards) = removeCard deck c ++ drawSpecific deck cards
+      
 
 -- discard number of cards from deck
 discard :: [Card] -> Integer -> [Card]
-discard _ _ = []
+discard [] _ = []
+discard deck 0 = deck
+discard (d:deck) n = discard deck (n-1)
 
 -- discard specific cards from deck
 discardSpecific :: [Card] -> [Card] -> [Card]
-discardSpecific _ _ = []
+discardSpecific deck dscrd = deck \\ dscrd
 
--- https://wiki.haskell.org/Random_shuffle
-shuffleIO :: [a] -> IO [a]
-shuffleIO xs = getStdRandom (shuffle' xs)
+-- https://wiki.haskell.org/Random_shuffle  I don't totally get this
+shuffle :: RandomGen g => [a] -> Rand g [a]
+shuffle xs = do
+    let l = length xs
+    rands <- forM [0..(l-2)] $ \i -> getRandomR (i, l-1)
+    let ar = runSTArray $ do
+        ar <- thawSTArray $ listArray (0, l-1) xs
+        forM_ (zip [0..] rands) $ \(i, j) -> do
+            vi <- readSTArray ar i
+            vj <- readSTArray ar j
+            writeSTArray ar j vi
+            writeSTArray ar i vj
+        return ar
+    return (elems ar)
 
 {- ScoreCard Functions -}
 
 -- increase score of player
-increaseScore :: Player -> Integer -> Player
-increaseScore _ = _
+addToScore :: Player -> Integer -> Player
+addToScore player n = setL _score ((getL _score player)+n) player
 
--- decrease score of player
-decreaseScore :: Player -> Integer -> Player
-decreaseScore _ = _
-
--- get score from a list of cards
-scorePlay :: Integer -> [Card] -> Integer
-scorePlay _ _ = _
+-- get score from a list of cards. TODO
+-- scorePlay :: Integer -> [Card] -> Integer
+-- scorePlay _ _ = _
 
 {- Dealer Functions -}
 
--- create new dealer
-newDealer :: Dealer 
-newDealer = _
-
--- replace old dealer with new one
-changeDealer :: Dealer -> Dealer
-changeDealer _ = _
-
 -- add player to dealer -> TABLE
 addPlayer :: Dealer -> Player -> Dealer
-addPlayer _ _ = _
+addPlayer dealer player = 
 
 -- remove player to dealer -> TABLE
 removePlayer :: Dealer -> Player -> Dealer
@@ -98,7 +111,7 @@ discard _ _ = _
 {- Player Functions -}
 
 -- create new player
-newPlayer :: Player
+newPlayer :: Integer -> Player
 newPlayer = _
 
 -- have player fold
