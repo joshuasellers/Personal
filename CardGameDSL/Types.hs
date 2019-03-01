@@ -25,11 +25,11 @@ data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten
      Seven -> "7"
      Eight -> "8"
      Nine  -> "9"
-     Ten   -> "T"
-     Jack  -> "J"
-     Queen -> "Q"
-     King  -> "K"
-     Ace   -> "A"
+     Ten   -> "10"
+     Jack  -> "Jack"
+     Queen -> "Queen"
+     King  -> "King"
+     Ace   -> "Ace"
 
 data Suit = Clubs | Diamonds | Hearts | Spades
   deriving (Eq, Ord, Bounded, Enum)
@@ -64,5 +64,6 @@ makeLenses ''Card
 makeLenses ''Rank
 makeLenses ''Suit
 makeLenses ''Dealer
+makeLenses ''Table
 
 

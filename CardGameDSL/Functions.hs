@@ -33,24 +33,32 @@ partialDeck remove = fullDeck \\ remove
 initialDiscardPile :: [Card]
 initialDiscardPile = []
 
--- draw number of cards from top of deck
-draw :: [Card] -> Integer -> [Card]
-draw deck 0 = []
-draw [] _ = []
-draw (d:deck) n = d : (draw deck (n-1))
+-- draw number of cards from top of deck -> return cards and new deck
+draw :: [Card] -> Integer -> ([Card],[Card])
+draw deck 0 = ([],deck)
+draw [] _ = ([],[])
+draw deck n = ((take n deck),(drop n deck))
 
--- remove specific card from deck
-removeCard :: [Card] -> Card -> [Card]
-removeCard [] _ = []
-removeCard (d:deck) c 
-    | d == c    = [d]
-    | otherwise = removeCard deck c
+-- find card in deck
+getCard :: [Card] -> Card -> [Card]
+getCard [] _ = []
+getCard (d:deck) c 
+        | d == c    = [d]
+        | otherwise = removeCard deck c
 
--- draw specific cards from deck
-drawSpecific :: [Card] -> [Card] -> [Card]
-drawSpecific _ [] = []
-drawSpecific [] _ = []
-drawSpecific deck (c:cards) = removeCard deck c ++ drawSpecific deck cards
+-- remove specific card from deck -> return card and new deck
+removeCard :: [Card] -> Card -> ([Card],[Card])
+removeCard [] _ = ([], [])
+removeCard deck c = ((getCard deck c),(deck \\ [c])) 
+
+-- draw specific cards from deck -> return cards and new deck
+drawSpecific :: [Card] -> [Card] -> ([Card],[Card])
+drawSpecific deck [] = ([], deck)
+drawSpecific [] _ = ([], [])
+drawSpecific deck cards = ((getSpecific deck cards), (deck \\ cards))
+        where getSpecific [] _ = []
+              getSpecific _ [] = []
+              getSpecific deck (c:cards) = getCard deck c ++ getSpecific (deck \\ [c]) cards
       
 
 -- discard number of cards from deck
@@ -130,4 +138,3 @@ discard _ _ = _
  -- move :: Player -> Move -> Player
 -- play final hand NEED ODDS FUNCTIONALITY
  -- play :: Player -> Move -> Player
-
