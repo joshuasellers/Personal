@@ -16,7 +16,7 @@ import Control.Monad
 import Control.Monad.ST
 import Data.STRef
 import System.Random
--- can't find import?
+
 import Types
 
 {- Deck Functions -}
@@ -93,10 +93,6 @@ changeScore :: Player -> Integer -> Player
 changeScore player n = player {_score = x}
   where x = (_score player) + n
 
--- get score from a list of cards. TODO
--- scorePlay :: Integer -> [Card] -> Integer
--- scorePlay _ _ = _
-
 {- Dealer Functions -}
 
 -- add player to dealer -> TABLE
@@ -135,7 +131,6 @@ addToTable table c = if (elem c (_inPlay table))
                         else table {_inPlay = x}
                           where x = c : (_inPlay table)
 
--- scoreTable :: Table -> X -> Table
 
 {- Player Functions -}
 
@@ -157,8 +152,3 @@ discardPlayer dealer player [] = (dealer, player)
 discardPlayer dealer player cards = ((dealer {_discard = x}), (player {_hand = y}))
               where x = (_discard dealer) ++ (fst (drawSpecific (_hand player) cards))
                     y = (_hand player) \\ cards
-
--- make move in game NEED ODDS FUNCTIONALITY
- -- move :: Player -> Move -> Player
--- play final hand NEED ODDS FUNCTIONALITY
- -- play :: Player -> Move -> Player
