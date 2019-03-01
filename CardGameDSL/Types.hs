@@ -7,14 +7,13 @@ File Description: Types
 
 module Types where
 
+import Data.Typeable
+
 -- CARD
 
--- TODO make Ord custumizable
--- https://stackoverflow.com/questions/5947340/overriding-in-haskell
--- maybe let user do it
 data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten
           | Jack | Queen | King | Ace
-  deriving (Read, Eq, Ord, Bounded, Enum)
+  deriving (Read, Eq, Bounded, Enum)
 instance Show Rank where
     show x = case x of
      Two   -> "2"
@@ -32,7 +31,7 @@ instance Show Rank where
      Ace   -> "Ace"
 
 data Suit = Clubs | Diamonds | Hearts | Spades
-  deriving (Eq, Ord, Bounded, Enum)
+  deriving (Eq, Bounded, Enum)
 instance Show Suit where
     show x = case x of
      Clubs    -> " ♧"
@@ -42,21 +41,40 @@ instance Show Suit where
 
 data Card = Card {_rank :: Rank, _suit :: Suit} 
  deriving (Eq)
-instance Ord Card where
-    (Card r1 _) `compare` (Card r2 _) = r1 `compare` r2
 instance Show Card where
     show (Card r s) = show r ++ show s
 
 -- PLAYER
 
-data Player = Player {_hand :: [Card], _turn :: Integer, _score :: Integer, _name :: String} deriving (Eq, Show)
+data Player = Player {
+  _hand :: [Card], 
+  _turn :: Integer, 
+  _score :: Integer, 
+  _name :: String} deriving (Eq, Show)
 
 -- DEALER
 
-data Dealer = Dealer {_deck :: [Card], _discard :: [Card], _players :: [Player], _handD :: [Card]}
+data Dealer = Dealer {
+  _deck :: [Card], 
+  _discard :: [Card], 
+  _players :: [Player], 
+  _handD :: [Card]} deriving (Eq, Show)
 
 -- TABLE
+-- I could potnetially add betting in
+data Table = Table {
+  _inPlay :: [Card], 
+  _pointsInPlay :: Integer} deriving (Eq, Show)
 
-data Table = Table {_inPlay :: [Card], _pointsInPlay :: Integer}
+-- GAME
+-- check if typeOf actually works TODO
+data Game = Game {
+  _orderRank :: [(Rank, Integer)], 
+  _orderSuit :: [(Suit, Integer)], 
+  _scoreHand :: ([Card] -> Integer),
+  _rankHands :: ([[Card]] -> Integer),  
+  _scoreTable :: ([Card] -> Integer)} 
+instance Show Game where
+    show (Game oRank oSuit sh rh st) = show oRank ++ show oSuit ++ (show $ typeOf sh) ++ (show $ typeOf rh) ++ (show $ typeOf st)
 
 

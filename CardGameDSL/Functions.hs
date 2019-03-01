@@ -15,7 +15,10 @@ import Data.Array.ST
 import Control.Monad
 import Control.Monad.ST
 import Data.STRef
+import Control.Monad.Random
 import System.Random
+import GHC.Arr
+
 
 import Types
 
@@ -72,19 +75,19 @@ discardSpecific :: [Card] -> [Card] -> [Card]
 discardSpecific deck dscrd = deck \\ dscrd
 
 -- https://wiki.haskell.org/Random_shuffle  I don't totally get this TODO TODO TODO
---shuffle :: RandomGen g => [a] -> Rand g [a]
---shuffle xs = do
---    let l = length xs
---    rands <- forM [0..(l-2)] $ \i -> getRandomR (i, l-1)
---    let ar = runSTArray $ do
---        ar <- thawSTArray $ listArray (0, l-1) xs
---        forM_ (zip [0..] rands) $ \(i, j) -> do
---            vi <- readSTArray ar i
---            vj <- readSTArray ar j
---            writeSTArray ar j vi
---            writeSTArray ar i vj
---        return ar
---    return (elems ar)
+shuffle :: RandomGen g => [a] -> Rand g [a]
+shuffle xs = do
+    let l = length xs
+   rands <- forM [0..(l-2)] $ \i -> getRandomR (i, l-1)
+    let ar = runSTArray $ do
+        ar <- thawSTArray $ listArray (0, l-1) xs
+        forM_ (zip [0..] rands) $ \(i, j) -> do
+            vi <- readSTArray ar i
+            vj <- readSTArray ar j
+            writeSTArray ar j vi
+            writeSTArray ar i vj
+        return ar
+    return (elems ar)
 
 {- ScoreCard Functions -}
 
