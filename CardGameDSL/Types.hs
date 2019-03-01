@@ -5,7 +5,7 @@ File Description: Types
 
 {-# OPTIONS -Wall -Wno-unused-imports #-}
 
-module CardGameDSL.Types where
+module Types where
 
 -- CARD
 
@@ -15,7 +15,7 @@ module CardGameDSL.Types where
 data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten
           | Jack | Queen | King | Ace
   deriving (Read, Eq, Ord, Bounded, Enum)
-   instance Show Rank where
+instance Show Rank where
     show x = case x of
      Two   -> "2"
      Three -> "3"
@@ -33,7 +33,7 @@ data Rank = Two | Three | Four | Five | Six | Seven | Eight | Nine | Ten
 
 data Suit = Clubs | Diamonds | Hearts | Spades
   deriving (Eq, Ord, Bounded, Enum)
-   instance Show Suit where
+instance Show Suit where
     show x = case x of
      Clubs    -> " ♧"
      Diamonds -> " ♢"
@@ -42,28 +42,21 @@ data Suit = Clubs | Diamonds | Hearts | Spades
 
 data Card = Card {_rank :: Rank, _suit :: Suit} 
  deriving (Eq)
-  instance Ord Card where
+instance Ord Card where
     (Card r1 _) `compare` (Card r2 _) = r1 `compare` r2
-  instance Show Card where
+instance Show Card where
     show (Card r s) = show r ++ show s
 
 -- PLAYER
 
-data Player = Player {_hand :: [Card], _turn :: Integer, _score :: Integer, _id :: Integer} deriving (Eq, Show)
+data Player = Player {_hand :: [Card], _turn :: Integer, _score :: Integer, _name :: String} deriving (Eq, Show)
 
 -- DEALER
 
-data Dealer = Dealer {_deck :: [Card], _discard :: [Card], _players = [Player], _handD :: [Card], _inPlay :: [Card]}
+data Dealer = Dealer {_deck :: [Card], _discard :: [Card], _players :: [Player], _handD :: [Card]}
 
 -- TABLE
 
 data Table = Table {_inPlay :: [Card], _pointsInPlay :: Integer}
-
-makeLenses ''Player
-makeLenses ''Card
-makeLenses ''Rank
-makeLenses ''Suit
-makeLenses ''Dealer
-makeLenses ''Table
 
 
