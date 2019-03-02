@@ -4,6 +4,7 @@ File Description: Functions
 -}
 
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 {-# OPTIONS -Wall -Wno-unused-imports #-}
 
 module Functions where
@@ -95,6 +96,11 @@ discard deck n = drop n deck
 -- discard specific cards from deck
 discardSpecific :: [Card] -> [Card] -> [Card]
 discardSpecific deck dscrd = deck \\ dscrd
+
+--polymorphic class for discarding
+class Discarding c d where
+   discar :: Dealer -> c -> d -> ([Card], Dealer)
+
 
 {- ScoreCard Functions -}
 
