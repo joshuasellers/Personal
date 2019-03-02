@@ -47,7 +47,8 @@ instance Show Card where
 -- PLAYER
 
 data Player = Player {
-  _hand :: [Card], 
+  _hand :: [Card],
+  _storedHands :: [[Card]], 
   _turn :: Integer, 
   _score :: Integer, 
   _name :: String} deriving (Eq, Show)
@@ -72,9 +73,12 @@ data Game = Game {
   _orderRank :: [(Rank, Integer)], 
   _orderSuit :: [(Suit, Integer)], 
   _scoreHand :: ([Card] -> Integer),
-  _rankHands :: ([[Card]] -> Integer),  
-  _scoreTable :: ([Card] -> Integer)} 
+  _compareHands :: ([Card] -> [Card] -> [Card]),  
+  _scorePile :: ([Card] -> Integer),
+  _handSize :: Integer} 
 instance Show Game where
-    show (Game oRank oSuit sh rh st) = show oRank ++ show oSuit ++ (show $ typeOf sh) ++ (show $ typeOf rh) ++ (show $ typeOf st)
+    show (Game oRank oSuit _ _ _ hz) = show oRank ++ show oSuit ++ 
+                                          (show "[Card] -> Integer") ++ (show "[Card] -> [Card] -> [Card]") 
+                                          ++ (show "[Card] -> Integer") ++ show hz
 
 
