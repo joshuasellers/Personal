@@ -87,20 +87,58 @@ instance Drawing [Card] where
 
 {- Discard Functions -}      
 
--- discard number of cards from deck
-discard :: [Card] -> Int -> [Card]
-discard [] _ = []
-discard deck 0 = deck
-discard deck n = drop n deck 
-
--- discard specific cards from deck
-discardSpecific :: [Card] -> [Card] -> [Card]
-discardSpecific deck dscrd = deck \\ dscrd
-
 --polymorphic class for discarding
-class Discarding c d where
-   discar :: Dealer -> c -> d -> ([Card], Dealer)
+class Discarding c where
+   discardP :: Dealer -> Player -> c -> (Dealer, Player)
+   discardD :: Dealer -> c -> Dealer
+   discardT :: Dealer -> Table -> c -> (Dealer, Table)
+instance Discarding Int where
+    discardP dealer player 0 = (dealer, player)
+    discardP dealer player n = (d,p)
+             where hand = _hand player
+                   d = dealer {_discard = ((take n (_hand player)) ++ (_discard dealer))}
+                   p = player {_hand = (drop n (_hand player)) }
+    discardD dealer 0 = dealer
+    discardD dealer n = d
+            where h = _handD dealer
+                  d = dealer {_discard = ((take n h) ++ (_discard dealer)), _handD = (drop n h) }
+    discardT dealer table 0 = (dealer, table)
+    discardT dealer table n = (d,t)
+            where pile = _inPlay table
+                  d = dealer {_discard = ((take n pile) ++ (_discard dealer))}
+                  t = table {_inPlay = (drop n pile)}
+instance Discarding Card where
+    discardP dealer player card = (d, p)
+            where hand = _hand player
+                  d = dealer {_discard = (getCard hand card) ++ (_discard dealer)} 
+                  p = player {_hand = (snd (removeCard hand card))}
+    discardD dealer card = d
+            where hand = _handD dealer
+                  d = dealer {_discard = (getCard hand card) ++ (_discard dealer), _handD = (snd (removeCard hand card))} 
+    discardT dealer table card = (d, t)
+            where hand = _inPlay table
+                  d = dealer {_discard = (getCard hand card) ++ (_discard dealer)} 
+                  t = table {_inPlay = (snd (removeCard hand card))}
+instance Discarding [Card] where
+    discardP dealer player [] = (dealer, player)
+    discardP dealer player cards = (d,p)
+            where hand = _hand player
+                  (c, h) = drawSpecificCards hand cards
+                  p = player {_hand = h}
+                  d = dealer {_discard = c ++ (_discard dealer)}
+    discardD dealer [] = dealer
+    discardD dealer cards = d
+            where hand = _handD dealer
+                  (c, h) = drawSpecificCards hand cards
+                  d = dealer {_discard = c ++ (_discard dealer), _handD = h}
+    discardT dealer table [] = (dealer, table)
+    discardT dealer table cards = (d,t)
+            where hand = _inPlay table
+                  (c, h) = drawSpecificCards hand cards
+                  t = table {_inPlay = h}
+                  d = dealer {_discard = c ++ (_discard dealer)}
 
+{- Deal Functions -}
 
 {- ScoreCard Functions -}
 
@@ -146,13 +184,6 @@ fold dealer player = ((dealer {_discard = x}),(player {_hand = []}))
 
 {- POTENTIAL FUNCTIONS -}
 
--- draw number of cards from top of deck -> return cards and new deck
---draw :: [Card] -> Int -> ([Card],[Card])
---draw deck 0 = ([],deck)
---draw [] _ = ([],[])
---draw deck n = ((take n deck),(drop n deck))
-
-
 -- https://wiki.haskell.org/Random_shuffle  I don't totally get this TODO TODO TODO
 --shuffle :: RandomGen g => [a] -> Rand g [a]
 --shuffle xs = do
@@ -167,35 +198,3 @@ fold dealer player = ((dealer {_discard = x}),(player {_hand = []}))
 --            writeSTArray ar i vj
 --        return ar
 --    return (elems ar)
-
-
--- have player draw
---drawPlayer :: Dealer -> Player -> Int -> (Dealer, Player)
---drawPlayer dealer player 0 = (dealer, player)
---drawPlayer dealer player n = ((dealer {_deck = (snd x)}),(player {_hand = y}))
---              where x = draw (_deck dealer) n
---                    y = (fst x) ++ (_hand player)
-
-
--- have player discard
---discardPlayer :: Dealer -> Player -> [Card] -> (Dealer, Player)
---discardPlayer dealer player [] = (dealer, player)
---discardPlayer dealer player cards = ((dealer {_discard = x}), (player {_hand = y}))
---              where x = (_discard dealer) ++ (fst (drawSpecificCards (_hand player) cards))
---                    y = (_hand player) \\ cards
-
-
--- deal to player
---deal :: Dealer -> Player -> Int -> (Dealer, Player)
---deal dealer player 0 = (dealer, player)
---deal dealer player n = ((dealer {_deck = y}),(player {_hand = z}))
---            where x = fst (draw (_deck dealer) n)
---                  y = snd (draw (_deck dealer) n)
---                  z = (_hand player) ++ x
-
-
--- discard cards
---discardDealer :: Dealer -> [Card] -> Dealer
---discardDealer dealer [] = dealer
---discardDealer dealer cards = dealer {_deck =  (fst t), _discard = (snd t)}
---   where t = drawSpecificCards cards cards
