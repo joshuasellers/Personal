@@ -232,13 +232,14 @@ clearDealer dealer = fst $ fold dealer dealer
 
 {- Table Functions -}
 
+changeTableScore :: Table -> Integer -> Table
+changeTableScore table n = table {_pointsInPlay = n + (_pointsInPlay table)}
 
-
-{- ScoreCard Functions -}
+{- Player Functions -}
 
 -- increase score of player
-changeScore :: Player -> Integer -> Player
-changeScore player n = player {_score = x}
+changePlayerScore :: Player -> Integer -> Player
+changePlayerScore player n = player {_score = x}
   where x = (_score player) + n
 
 {- Dealer Functions -}
@@ -246,8 +247,8 @@ changeScore player n = player {_score = x}
 -- add player to dealer -> TABLE
 addPlayer :: Dealer -> Player -> Dealer
 addPlayer dealer player = if (elem player (_players dealer))
-                              then dealer {_players = x}
-                              else dealer
+                              then dealer 
+                              else dealer {_players = x}
                                where x = player : (_players dealer)
 
 -- remove player to dealer -> TABLE
@@ -257,14 +258,6 @@ removePlayer dealer player = if (elem player (_players dealer))
                                 else dealer
                                   where x = (_players dealer) \\ [player]
 
-
-{- Table Functions -}
-
-addToTable :: Table -> Card -> Table
-addToTable table c = if (elem c (_inPlay table))
-                        then table
-                        else table {_inPlay = x}
-                          where x = c : (_inPlay table)
 
 {- POTENTIAL FUNCTIONS -}
 
