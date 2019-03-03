@@ -63,6 +63,16 @@ drawSpecificCards deck cards = ((getSpecific deck cards), (deck \\ cards))
               getSpecific _ [] = []
               getSpecific dck (c:cds) = getCard dck c ++ getSpecific (dck \\ [c]) cds
 
+-- https://www.reddit.com/r/haskell/comments/96ic6c/how_do_i_shuffle_a_list/
+-- I think this should work since the game would be run through a main method
+shuffle :: [Card] -> IO [Card]
+shuffle [] = return []
+shuffle [x] = return [x] 
+shuffle deck = do
+    i <- randomRIO (0,length deck - 1)
+    shuffledRest <- shuffle (take i deck ++ drop (i+1) deck)
+    return $ (deck !! i) : shuffledRest
+
 {- Drawing Functions -}
 
 class Drawing c where
@@ -257,21 +267,3 @@ removePlayer dealer player = if (elem player (_players dealer))
                                 then dealer {_players = x}
                                 else dealer
                                   where x = (_players dealer) \\ [player]
-
-
-{- POTENTIAL FUNCTIONS -}
-
--- https://wiki.haskell.org/Random_shuffle  I don't totally get this TODO TODO TODO
---shuffle :: RandomGen g => [a] -> Rand g [a]
---shuffle xs = do
---    let l = length xs
---    rands <- forM [0..(l-2)] $ \i -> getRandomR (i, l-1)
---    let ar = runSTArray $ do
---        ar <- thawSTArray $ listArray (0, l-1) xs
---        forM_ (zip [0..] rands) $ \(i, j) -> do
---            vi <- readSTArray ar i
---            vj <- readSTArray ar j
---            writeSTArray ar j vi
---            writeSTArray ar i vj
---        return ar
---    return (elems ar)
