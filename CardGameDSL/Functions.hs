@@ -42,8 +42,6 @@ revertDrawDiscard :: Dealer -> Dealer
 revertDrawDiscard dealer = dealer {_deck = d, _discard = []}
           where d = (_deck dealer) ++ (_discard dealer)
 
-{- Draw Functions -}
-
 -- find card in deck
 getCard :: [Card] -> Card -> [Card]
 getCard [] _ = []
@@ -65,8 +63,8 @@ drawSpecificCards deck cards = ((getSpecific deck cards), (deck \\ cards))
               getSpecific _ [] = []
               getSpecific dck (c:cds) = getCard dck c ++ getSpecific (dck \\ [c]) cds
 
--- drawing class
--- allows for polymorphism 
+{- Drawing Functions -}
+
 class Drawing c where
    draw :: Dealer -> c -> ([Card], Dealer)
 instance Drawing Int where
@@ -85,9 +83,75 @@ instance Drawing [Card] where
               cs = fst out
               d = dealer {_deck = (snd out)}
 
+
+{- Deal Functions -}
+
+class (Drawing n) => Dealing p n where
+    deal :: Dealer -> p -> n -> (Dealer, p)
+instance (Drawing n) => Dealing Dealer n where
+    deal d1 _ x = (dealer, dealer)
+        where (cards, dlr) = draw d1 x
+              dealer = dlr {_handD = cards ++ (_handD dlr)}
+instance (Drawing n) => Dealing Player n where
+    deal dealer player x = (d, p)
+        where (cards, dlr) = draw dealer x
+              d = dlr 
+              p = player {_hand = cards ++ (_hand player)}
+
+dealToDealer :: (Drawing n) => Dealer -> n -> Dealer
+dealToDealer dealer n = fst $ deal dealer dealer n
+
+
+{- Play Functions -}
+
+class Playing p n where
+    play :: Table -> p -> n -> (p, Table)
+instance Playing Dealer Int where
+    play table dealer 0 = (dealer, table)
+    play table dealer n = (d,t)
+        where hand = _handD dealer
+              pile = _inPlay table
+              d = dealer {_handD = (drop n hand)}
+              t = table {_inPlay = (take n hand) ++ pile}
+instance Playing Dealer Card where
+    play table dealer card = (d,t)
+        where hand = _handD dealer
+              pile = _inPlay table
+              (c, h) = removeCard hand card 
+              d = dealer {_handD = h}
+              t = table {_inPlay = c ++ pile}
+instance Playing Dealer [Card] where
+    play table dealer cards = (d,t)
+        where hand = _handD dealer
+              pile = _inPlay table
+              (cs,h) = drawSpecificCards hand cards
+              d = dealer {_handD = h}
+              t = table {_inPlay = cs ++ pile}
+instance Playing Player Int where
+    play table player 0 = (player, table)
+    play table player n = (p,t)
+        where hand = _hand player
+              pile = _inPlay table
+              p = player {_hand = (drop n hand)}
+              t = table {_inPlay = (take n hand) ++ pile}
+instance Playing Player Card where
+    play table player card = (p,t)
+        where hand = _hand player
+              pile = _inPlay table
+              (c, h) = removeCard hand card 
+              p = player {_hand = h}
+              t = table {_inPlay = c ++ pile}
+instance Playing Player [Card] where
+    play table player cards = (p,t)
+        where hand = _hand player
+              pile = _inPlay table
+              (cs,h) = drawSpecificCards hand cards
+              p = player {_hand = h}
+              t = table {_inPlay = cs ++ pile}
+
+
 {- Discard Functions -}      
 
---polymorphic class for discarding
 class Discarding c where
    discardP :: Dealer -> Player -> c -> (Dealer, Player)
    discardD :: Dealer -> c -> Dealer
@@ -163,12 +227,10 @@ instance Folding Table where
 clearTable :: Dealer -> Table -> (Dealer, Table)
 clearTable dealer table = fold dealer table
 
-clearDealer :: Dealer -> Dealer -> Dealer
-clearDealer d1 d2 = if (d1 == d2)
-                               then fst $ fold d1 d2
-                               else error "Sorry, must equal"
+clearDealer :: Dealer -> Dealer
+clearDealer dealer = fst $ fold dealer dealer
 
-{- Deal Functions -}
+{- Table Functions -}
 
 
 

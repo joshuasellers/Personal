@@ -51,7 +51,8 @@ data Player = Player {
   _storedHands :: [[Card]], 
   _turn :: Integer, 
   _score :: Integer, 
-  _name :: String} deriving (Eq, Show)
+  _name :: String,
+  _played :: [Card]} deriving (Eq, Show)
 
 -- DEALER
 
@@ -59,7 +60,8 @@ data Dealer = Dealer {
   _deck :: [Card], 
   _discard :: [Card], 
   _players :: [Player], 
-  _handD :: [Card]} deriving (Eq, Show)
+  _handD :: [Card],
+  _playedD :: [Card]} deriving (Eq, Show)
 
 -- TABLE
 -- I could potnetially add betting in
