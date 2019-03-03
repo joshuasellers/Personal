@@ -254,14 +254,19 @@ changePlayerScore player n = player {_score = x}
 
 {- Dealer Functions -}
 
--- add player to dealer -> TABLE
+-- increase score of dealer
+changeDealerScore :: Dealer -> Integer -> Dealer
+changeDealerScore dealer n = dealer {_scoreD = x}
+  where x = (_scoreD dealer) + n
+
+-- add player to dealer 
 addPlayer :: Dealer -> Player -> Dealer
 addPlayer dealer player = if (elem player (_players dealer))
                               then dealer 
                               else dealer {_players = x}
                                where x = player : (_players dealer)
 
--- remove player to dealer -> TABLE
+-- remove player to dealer 
 removePlayer :: Dealer -> Player -> Dealer
 removePlayer dealer player = if (elem player (_players dealer))
                                 then dealer {_players = x}

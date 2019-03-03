@@ -57,6 +57,10 @@ data Player = Player {
 -- DEALER
 
 data Dealer = Dealer {
+  _nameD :: String,
+  _turnD :: Integer,
+  _scoreD :: Integer,
+  _storedHandsD :: [[Card]],
   _deck :: [Card], 
   _discard :: [Card], 
   _players :: [Player], 

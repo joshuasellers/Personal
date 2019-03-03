@@ -14,6 +14,21 @@ import System.Random
 import Types
 import Functions
 
+{- Helper Functions For Rules and Scoring -}
+
+toDealer :: Dealer -> Player -> (Dealer, Dealer)
+toDealer currdealer player = (newD, oldD)
+    where newD = Dealer {_nameD = (_name player), _turnD = (_turn player),
+                    _scoreD = (_score player), _storedHandsD = (_storedHands player), _deck = (_deck currdealer),
+                    _discard = (_discard currdealer), _players = (_players currdealer) \\ [player],
+                    _handD = (_hand player), _playedD = (_played player)}
+          oldD = currdealer {_players = (_players newD)}
+
+toPlayer :: Dealer -> Player
+toPlayer dealer = Player {_hand = (_handD dealer), _storedHands = (_storedHandsD dealer),
+        _turn = (_turnD dealer), _score = (_scoreD dealer), _name = (_nameD dealer), 
+        _played = (_playedD dealer)}
+
 -- error check for if a list of cards has dupes
 hasDupes :: [Card] -> Bool
 hasDupes [] = False
