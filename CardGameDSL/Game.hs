@@ -46,18 +46,3 @@ possibleHands n deck = concatMap permutations $ possibleHands' deck [] where
   possibleHands' (x:xs) r | length r == n = [r]
                           | otherwise     = possibleHands' xs (x:r) 
                                             ++ possibleHands' xs r
-
--- can i make a function that lets user specif scoring and rank, or is that something the would make                           
-
--- make move in game NEED ODDS FUNCTIONALITY
- -- move :: Player -> Move -> Player
--- play final hand NEED ODDS FUNCTIONALITY
- -- play :: Player -> Move -> Player
-
- --data Game = Game {
---  _orderRank :: [(Rank, Integer)], 
---  _orderSuit :: [(Suit, Integer)], 
---  _scoreHand :: ([Card] -> Integer),
- -- _compareHands :: ([Card] -> [Card] -> [Card]),  
---  _scorePile :: ([Card] -> Integer),
- -- _handSize :: Integer} 
