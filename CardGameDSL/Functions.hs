@@ -96,8 +96,8 @@ instance Discarding Int where
     discardP dealer player 0 = (dealer, player)
     discardP dealer player n = (d,p)
              where hand = _hand player
-                   d = dealer {_discard = ((take n (_hand player)) ++ (_discard dealer))}
-                   p = player {_hand = (drop n (_hand player)) }
+                   d = dealer {_discard = ((take n hand) ++ (_discard dealer))}
+                   p = player {_hand = (drop n hand) }
     discardD dealer 0 = dealer
     discardD dealer n = d
             where h = _handD dealer
@@ -138,7 +138,39 @@ instance Discarding [Card] where
                   t = table {_inPlay = h}
                   d = dealer {_discard = c ++ (_discard dealer)}
 
+{- Fold Functions -}
+
+class Folding p where
+    fold :: Dealer -> p -> (Dealer, p)
+instance Folding Dealer where
+    fold d1 _ = (d1 {_discard = d ,_handD = []},d1 {_discard = d ,_handD = []})
+            where dis = _discard d1
+                  hand =_handD d1
+                  d = hand ++ dis
+instance Folding Player where
+    fold dealer player = (d,p)
+            where dis = _discard dealer
+                  hand =_hand player
+                  d = dealer {_discard = hand ++ dis}
+                  p = player {_hand = []}
+instance Folding Table where
+    fold dealer table = (d,t) 
+            where dis = _discard dealer
+                  hand =_inPlay table
+                  d = dealer {_discard = hand ++ dis}
+                  t = table {_inPlay = []}
+
+clearTable :: Dealer -> Table -> (Dealer, Table)
+clearTable dealer table = fold dealer table
+
+clearDealer :: Dealer -> Dealer -> Dealer
+clearDealer d1 d2 = if (d1 == d2)
+                               then fst $ fold d1 d2
+                               else error "Sorry, must equal"
+
 {- Deal Functions -}
+
+
 
 {- ScoreCard Functions -}
 
@@ -171,16 +203,6 @@ addToTable table c = if (elem c (_inPlay table))
                         then table
                         else table {_inPlay = x}
                           where x = c : (_inPlay table)
-
-
-{- Player Functions -}
-
--- have player fold
-fold :: Dealer -> Player -> (Dealer, Player)
-fold dealer player = ((dealer {_discard = x}),(player {_hand = []}))
-              where x = (_discard dealer) ++ (_hand player)
-
-
 
 {- POTENTIAL FUNCTIONS -}
 
