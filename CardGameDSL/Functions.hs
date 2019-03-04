@@ -97,20 +97,23 @@ instance Drawing [Card] where
 {- Deal Functions -}
 
 class (Drawing n) => Dealing p n where
-    deal :: Dealer -> p -> n -> (Dealer, p)
+    deal :: Dealer -> p -> n -> Dealer
 instance (Drawing n) => Dealing Dealer n where
-    deal d1 _ x = (dealer, dealer)
+    deal d1 _ x = dealer
         where (cards, dlr) = draw d1 x
               dealer = dlr {_handD = cards ++ (_handD dlr)}
 instance (Drawing n) => Dealing Player n where
-    deal dealer player x = (d, p)
+    deal dealer player x = d
         where (cards, dlr) = draw dealer x
-              d = dlr 
+              dl = dlr 
               p = player {_hand = cards ++ (_hand player)}
+              d = dl {_players = replace (_players dl) player p}
 
 dealToDealer :: (Drawing n) => Dealer -> n -> Dealer
-dealToDealer dealer n = fst $ deal dealer dealer n
+dealToDealer dealer n = deal dealer dealer n
 
+deals :: (Drawing n) => Dealer -> n -> Dealer
+deals dealer n = foldl (\ b x -> deal b x n) dealer (_players dealer)  
 
 {- Play Functions -}
 
@@ -272,3 +275,10 @@ removePlayer dealer player = if (elem player (_players dealer))
                                 then dealer {_players = x}
                                 else dealer
                                   where x = (_players dealer) \\ [player]
+
+{- Extra Functions -}
+
+replace :: Eq a =>[a] -> a -> a -> [a]
+replace [] _ _ = []
+replace (x:xs) y z = if (y==x) then z:xs else x : replace xs y z
+

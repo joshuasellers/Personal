@@ -78,13 +78,13 @@ data Table = Table {
 data Game = Game {
   _orderRank :: [(Rank, Integer)], 
   _orderSuit :: [(Suit, Integer)], 
-  _scoreHand :: ([Card] -> Integer),
-  _compareHands :: ([Card] -> [Card] -> [Card]),  
-  _scorePile :: ([Card] -> Integer),
+  _scoreHand :: (Game -> [Card] -> Integer),
+  _compareHands :: (Game -> [Card] -> [Card] -> Ordering),  
+  _scorePile :: (Game -> [Card] -> Integer),
   _handSize :: Integer} 
 instance Show Game where
     show (Game oRank oSuit _ _ _ hz) = show oRank ++ show oSuit ++ 
-                                          (show "[Card] -> Integer") ++ (show "[Card] -> [Card] -> [Card]") 
-                                          ++ (show "[Card] -> Integer") ++ show hz
+                                          (show "Game -> [Card] -> Integer") ++ (show "Game -> [Card] -> [Card] -> Ordering") 
+                                          ++ (show "Game -> [Card] -> Integer") ++ show hz
 
 
