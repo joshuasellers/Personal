@@ -106,9 +106,12 @@ combine (r:ranks) s = (foldl (\ b x -> if (((snd $ (last s)) - (snd $ (head s)))
                                           else b ++ [(Card {_rank = fst r, _suit = fst x}, 4 * snd r + snd x)]) 
                                          [] s) ++ combine ranks s
 ```
+### Example Code
+I made an example to show some basic usage of the DSL.  I created a si mplified version of Five Card Draw Poker.  I reused my compare method from a previous project that specifically focussed on Poker and Cribbage.  The files for this example are: `ExampleMain.hs` and `PokerExample.hs`.  I made a simple `main` to run a game.
 ### Next Steps
 - Update discard and fold to not return a tuple (I already fixed that for deal)
 - Add betting functions and fields for players and dealers
 - Add in odds-calculating functions so that programmers can encode a computer oponent
 - Test out some non-traditional cards games (like War or Go Fish)
 - Clean up some functions that are outdated after I improved other, similar, ones
+- Add in more helper functions to `Game.hs` - `PokerExample.hs` still wound up being a fairly large file
