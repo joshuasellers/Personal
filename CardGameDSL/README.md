@@ -32,7 +32,14 @@ The DSL is comprised of seven `data` types.  They are housed in `Types.hs`.
 | Table | For games like Texas Hold'Em |
 | Game | Has all of the programmer-defined rules |
 
-These datatypes are used throughout the DSL and are the buildingblocks that go into almost every function.
+These datatypes are used throughout the DSL and are the buildingblocks that go into almost every function.  Here is the code for `Card`:
+
+```sh
+data Card = Card {_rank :: Rank, _suit :: Suit} 
+ deriving (Eq)
+instance Show Card where
+    show (Card r s) = show r ++ show s
+```
 
 There are two other important files: `Game.hs` and `Functions.hs` (I also made example files, but they are not relavent to the DSL itself).  `Function.hs` contains all fo the general functions for the DSL.  Examples include `draw` and `deal`:
 
