@@ -13,7 +13,7 @@ I envision this being used to create any kind of game that requires one or more 
 
 > The first iteration has enough easy usability
 > for games like Texas Hold'Em and Five Card Draw.
-> It can do more, but that involves more preactice
+> It can do more, but that involves more practice
 > and refinement with the language.
 
 
@@ -92,7 +92,7 @@ The `class` allowed for polymorphism when it comes to commonly used functions li
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 ```
-For `Game.hs`, I put all of the rule-specific functions into there.  The most important functions, that are also included in the `Game` datatype, are involved with comparing hands and scoring.  I made the decision to have the user actually define them, to allow for more flexibility, but I did write numerous helper functions for the user to utilize like these:
+For `Game.hs`, I put all of the rule-specific functions into there.  The most important functions, that are also included in the `Game` datatype, are involved with comparing hands and scoring.  I made the decision to have the user actually define those areas, to allow for more flexibility, but I did write numerous helper functions for the user to utilize like these:
 ```sh
 -- combine suit and rank into card ranknig
 fullCardRanking :: Game -> [(Card, Integer)]
@@ -114,7 +114,7 @@ combine (r:ranks) s = (foldl (\ b x -> if (((snd $ (last s)) - (snd $ (head s)))
                                          [] s) ++ combine ranks s
 ```
 ### Example Code
-I made an example to show some basic usage of the DSL.  I created a si mplified version of Five Card Draw Poker.  I reused my compare method from a previous project that specifically focussed on Poker and Cribbage.  The files for this example are: `ExampleMain.hs` and `PokerExample.hs`.  I made a simple `main` to run a game.
+I made an example to show some basic usage of the DSL.  I created a simplified version of Five Card Draw Poker.  I reused my compare method from a previous project that specifically focussed on Poker and Cribbage.  The files for this example are: `ExampleMain.hs` and `PokerExample.hs`.  I made a simple `main` to run a game.
 ### Next Steps
 - Update discard and fold to not return a tuple (I already fixed that for deal)
 - Add betting functions and fields for players and dealers
