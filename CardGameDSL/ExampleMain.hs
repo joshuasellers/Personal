@@ -40,11 +40,11 @@ game = Game {_orderRank = orderRank, _orderSuit = orderSuit, _scoreHand = scoreH
              _compareHands = compareHands,  _scorePile = scorePile, _handSize = handSize}
 
 poker :: Game -> Dealer -> IO ()
-poker game d = do deck <- shuffle (_deck d)
-                  let dealer = d {_deck = deck}
-                  let newDealer = deals dealer (fromIntegral (_handSize game) :: Int)
-                  putStrLn (show (bestHand game (_players newDealer)))
-                  return ()
+poker gm d = do deck <- shuffle (_deck d)
+                let dealer = d {_deck = deck}
+                let newDealer = deals dealer (fromIntegral (_handSize gm) :: Int)
+                putStrLn (show (bestHand gm (_players newDealer)))
+                return ()
 
 main :: IO()
 main = do let p1 = Player {_hand = [], _storedHands=[],_turn=0,_score=0,_name="Bob",_played=[]}

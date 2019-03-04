@@ -87,7 +87,7 @@ orderManual [] _ = error "Empty list error"
 orderManual _ [] = error "Empty list error"
 orderManual as (o:ords) = if (last $ sort (o:ords)) - (head $ sort (o:ords)) == (toInteger (length (o:ords))) - 1 && (head $ sort (o:ords)) == 0
                            then order as (o:ords) 
-                           else if (last $ sort (o:ords)) == (head $ sort (o:ords)) || (last $ sort (o:ords)) < (toInteger $ length (o:ords)) 
+                           else if (last $ sort (o:ords)) == (head $ sort (o:ords)) || ((last $ sort (o:ords)) < (toInteger $ length (o:ords)) && (head $ sort (o:ords)) == 0) 
                                  then order as (o:ords)
                                  else error "give sequential values starting at 0"
                   where order [] [] = []
