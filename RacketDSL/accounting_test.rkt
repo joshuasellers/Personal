@@ -1,6 +1,3 @@
-#lang reader "accounting_reader.rkt"
-4
-8
-+
-3
-*
+#lang br
+(require "parser.rkt")
+(parse-to-datum "0a")

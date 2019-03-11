@@ -1,9 +1,23 @@
 #lang br/quicklang
+(require "parser.rkt")
 
 (define (read-syntax path port)
-  (define src-lines (port->lines port))
-  (define src-datums (format-datums '(handle ~a) src-lines))
-  (define module-datum `(module stacker-mod "accounting_expander.rkt"
-                          ,@src-datums))
+  (define parse-tree (parse path (make-tokenizer port)))
+  (define module-datum `(module accounting-mod "accounting_expander.rkt"
+                          ,parse-tree))
   (datum->syntax #f module-datum))
 (provide read-syntax)
+
+(require brag/support)
+(define (make-tokenizer port)
+  (define (next-token)
+    (define ac-lexer
+      (lexer
+       [(char-set "/()yo") lexeme]
+       [numeric lexeme]
+       [any-char (next-token)]))
+    (ac-lexer port))  
+  next-token)
+
+;  "accounting_expander.rkt"
+; (equipment 20000) (cash 10000, notes payable 10000)
