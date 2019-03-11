@@ -1,0 +1,1 @@
+("7.2" racket ("8a516c5fb67a97d5540dd4a964436fc62c9223f5" . "eaf9e58f5c9d5c1404e643538370d99bcbf3a45b") (collects #"br" #"quicklang.rkt") (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"runtime-config.rkt"))
