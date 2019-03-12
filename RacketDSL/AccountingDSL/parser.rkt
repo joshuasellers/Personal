@@ -1,7 +1,7 @@
 #lang brag
 
 ac-line : (journal-entry)*
-journal-entry : entry-date "<" debit ("," debit)* ">" "<" credit ("," credit)* ">"
+journal-entry : entry-date /"<" debit /("," debit)* /">" /"<" credit (/"," credit)* /">"
 entry-date : (@digit{1,2} "-" @digit{1,2} "-" @digit{4})*
 debit : (accountd amt)+
 accountd : (wrd /"-")+
