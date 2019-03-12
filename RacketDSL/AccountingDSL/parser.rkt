@@ -1,7 +1,10 @@
 #lang brag
 
-ac-line : (journal-entry)*
-journal-entry : entry-date /"<" debit /("," debit)* /">" /"<" credit (/"," credit)* /">"
+ac-line : (journal-entry)* ; | command)*
+;command : @word
+journal-entry : "["entry-date /"<" debits /">" /"<" credits /">""]"
+debits : debit (/"," debit)*
+credits : credit (/"," credit)*
 entry-date : (@digit{1,2} "-" @digit{1,2} "-" @digit{4})*
 debit : (accountd amt)+
 accountd : (@word /"-")+

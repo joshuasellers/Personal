@@ -13,9 +13,7 @@
   (define (next-token)
     (define ac-lexer
       (lexer
-       [(char-set ",-1234567890<>aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ") lexeme]
+       [(char-set "[],-1234567890<>aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ") lexeme]
        [any-char (next-token)]))
     (ac-lexer port))  
   next-token)
-
-; ,-<>aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
