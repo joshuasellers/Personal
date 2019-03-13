@@ -10,7 +10,7 @@
   (for/fold ([current-apl apl])
             ([ac-func (in-list ac-funcs)])
     (cond
-      [(equal? "d" ac-func) (cons ac-func current-apl)]
+      [(equal? "d" ac-func) (set! current-apl empty)]
       [(equal? "c" ac-func) (cons ac-func current-apl)]
       [else (cons ac-func current-apl)])))
 

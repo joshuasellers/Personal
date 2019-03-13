@@ -1,6 +1,6 @@
 #lang brag
 
-ac-line : (journal-entry | command)*
+ac-line : (journal-entry | @command)*
 command : "d" | "c"
 journal-entry : "["entry-date /"<" debits /">" /"<" credits /">""]"
 debits : debit (/"," debit)*
