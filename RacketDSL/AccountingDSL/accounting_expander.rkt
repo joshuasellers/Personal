@@ -1,4 +1,5 @@
 #lang br/quicklang
+(require gregor)
 
 (define-macro (ac-module-begin PARSE-TREE)
   #'(#%module-begin
@@ -20,20 +21,20 @@
   #'(lambda (ledger)
       (define entry (list INFO ...))
       (define dt (first entry))
-      (display (first entry))
+      (display dt)
+      (display (date? dt))
       (set! entry (rest entry))
       (define d (first entry))
-      (display (first entry))
+      (display d)
       (set! entry (rest entry))
       (define c (first entry))
-      (display (first entry))
-      (set! entry (rest entry))
+      (display c)
       ledger
       ))
 (provide journal-entry)
 
 (define-macro (entry-date DATE ...)
-  #' "date")
+  #' (iso8601->date (apply string-append (list DATE ...))))
 (provide entry-date)
 
 (define-macro (debits DEBITS ...)

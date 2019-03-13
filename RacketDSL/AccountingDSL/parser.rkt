@@ -5,7 +5,7 @@ ac-line : (journal-entry)* ; | command)*
 journal-entry : "["entry-date /"<" debits /">" /"<" credits /">""]"
 debits : debit (/"," debit)*
 credits : credit (/"," credit)*
-entry-date : (@digit{1,2} "-" @digit{1,2} "-" @digit{4})*
+entry-date : (@digit{4} "-" @digit{1,2} "-" @digit{1,2})*
 debit : (accountd amt)+
 accountd : (@word /"-")+
 credit : (accountc amt)+
