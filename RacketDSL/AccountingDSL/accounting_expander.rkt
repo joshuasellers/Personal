@@ -9,27 +9,28 @@
 (define (fold-funcs apl ac-funcs)
   (for/fold ([current-apl apl])
             ([ac-func (in-list ac-funcs)])
-    (ac-func current-apl)))
+    (cond
+      [(equal? "d" ac-func) (cons ac-func current-apl)]
+      [(equal? "c" ac-func) (cons ac-func current-apl)]
+      [else (cons ac-func current-apl)])))
 
 (define-macro (ac-line ENTRIES ...)
   #'(begin
       (define ledger empty)
-      (void (fold-funcs ledger (list ENTRIES ...)))))
+      (display (fold-funcs ledger (list ENTRIES ...)))))
 (provide ac-line)
 
 (define-macro (journal-entry "[" INFO ... "]")
   #'(lambda (ledger)
       (define entry (list INFO ...))
       (define dt (first entry))
-      (display dt)
-      (display (date? dt))
       (set! entry (rest entry))
       (define d (first entry))
-      (display d)
       (set! entry (rest entry))
       (define c (first entry))
-      (display c)
-      ledger
+      (define e (list dt d c))
+      (display e)
+      e
       ))
 (provide journal-entry)
 
@@ -44,4 +45,8 @@
 (define-macro (credits CREDITS ...)
   #' "credits")
 (provide credits)
+
+(define-macro (command CREDITS ...)
+  #' "command")
+(provide command)
 
