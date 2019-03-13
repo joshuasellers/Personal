@@ -11,8 +11,12 @@
             ([ac-func (in-list ac-funcs)])
     (cond
       [(equal? "d" ac-func) (set! current-apl empty)]
-      [(equal? "c" ac-func) (cons ac-func current-apl)]
+      [(equal? "c" ac-func) (print-info current-apl)]
       [else (cons ac-func current-apl)])))
+
+(define (print-info journal)
+  (display "journal")
+  journal)
 
 (define-macro (ac-line ENTRIES ...)
   #'(begin
