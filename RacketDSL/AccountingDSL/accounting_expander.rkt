@@ -15,7 +15,9 @@
       [else (cons ac-func current-apl)])))
 
 (define (print-info journal)
-  (display "journal")
+  (display (for/fold ([curr-ledger empty])
+            ([entry (in-list journal)])
+    (cons "entry" curr-ledger)))
   journal)
 
 (define-macro (ac-line ENTRIES ...)
@@ -43,14 +45,31 @@
 (provide entry-date)
 
 (define-macro (debits DEBITS ...)
-  #' "debits")
+  #' (fold-accs empty (list DEBITS ...))
+  )
 (provide debits)
 
+(define-macro (debit INFO ...)
+  #' "debit"
+  )
+(provide debit)
+
 (define-macro (credits CREDITS ...)
-  #' "credits")
+  #' (fold-accs empty (list CREDITS ...)))
 (provide credits)
 
-(define-macro (command CREDITS ...)
+(define-macro (credit INFO ...)
+  #' "credit"
+  )
+(provide credit)
+
+(define (fold-accs ledger acs)
+  (for/fold ([current-apl ledger])
+            ([ac (in-list acs)])
+    (cons "ac" current-apl)))
+
+
+(define-macro (command COMMAND ...)
   #' "command")
 (provide command)
 

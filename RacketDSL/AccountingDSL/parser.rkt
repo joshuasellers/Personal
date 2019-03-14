@@ -6,10 +6,9 @@ journal-entry : "["entry-date /"<" debits /">" /"<" credits /">""]"
 debits : debit (/"," debit)*
 credits : credit (/"," credit)*
 entry-date : (@digit{4} "-" @digit{1,2} "-" @digit{1,2})*
-debit : (accountd amt)+
-accountd : (@word /"-")+
-credit : (accountc amt)+
-accountc : (@word /"-")+
+debit : (account amt){1}
+credit : (account amt){1}
+account : (@word /"-")+
 amt : [@zero] | [@num (@zero | @num)*]
 word : [@letter+]
 letter : "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" |
