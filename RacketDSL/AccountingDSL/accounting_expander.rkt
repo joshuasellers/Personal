@@ -17,7 +17,7 @@
 (define (print-info journal)
   (display (for/fold ([curr-ledger empty])
             ([entry (in-list journal)])
-    (cons "entry" curr-ledger)))
+    (entry curr-ledger)))
   journal)
 
 (define-macro (ac-line ENTRIES ...)
@@ -36,7 +36,7 @@
       (define c (first entry))
       (define e (list dt d c))
       (display e)
-      e
+      (cons e ledger)
       ))
 (provide journal-entry)
 
