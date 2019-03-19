@@ -86,4 +86,20 @@
             ([entry (in-list journal)])
     (entry curr-ledger)))
   (display j)
+  (display (assets))
   journal)
+
+(struct assets ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [expense #:auto #:mutable])
+  #:auto-value empty
+  #:transparent
+  #:extra-constructor-name Assets)
+
+(struct liabilities ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [expense #:auto #:mutable])
+  #:auto-value empty
+  #:transparent
+  #:extra-constructor-name Assets)
+
+(struct rde ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [expense #:auto #:mutable])
+  #:auto-value empty
+  #:transparent
+  #:extra-constructor-name Assets)
