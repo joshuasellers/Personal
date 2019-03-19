@@ -12,6 +12,7 @@
     (cond
       [(equal? "d" ac-func) (set! current-apl empty)]
       [(equal? "c" ac-func) (print-info current-apl)]
+      [(equal? "l" ac-func) (print-ledger current-apl)]
       [else (cons ac-func current-apl)])))
 
 (define (print-info journal)
@@ -23,7 +24,7 @@
 (define-macro (ac-line ENTRIES ...)
   #'(begin
       (define ledger empty)
-      (display (fold-funcs ledger (list ENTRIES ...)))))
+      (void (fold-funcs ledger (list ENTRIES ...)))))
 (provide ac-line)
 
 (define-macro (journal-entry "[" INFO ... "]")
@@ -35,7 +36,6 @@
       (set! entry (rest entry))
       (define c (first entry))
       (define e (list dt d c))
-      (display e)
       (cons e ledger)
       ))
 (provide journal-entry)
@@ -50,7 +50,7 @@
 (provide debits)
 
 (define-macro (debit INFO ...)
-  #' "debit"
+  #' (fold-accs empty (list INFO ...))
   )
 (provide debit)
 
@@ -59,17 +59,31 @@
 (provide credits)
 
 (define-macro (credit INFO ...)
-  #' "credit"
+  #' (fold-accs empty (list INFO ...))
   )
 (provide credit)
 
 (define (fold-accs ledger acs)
   (for/fold ([current-apl ledger])
             ([ac (in-list acs)])
-    (cons "ac" current-apl)))
+    (cons ac current-apl)))
 
 
 (define-macro (command COMMAND ...)
   #' "command")
 (provide command)
 
+(define-macro (account LETTER ...)
+  #' (apply string-append (list LETTER ...)))
+(provide account)
+
+(define-macro (amt NUMBER ...)
+  #' (apply string-append (list NUMBER ...)))
+(provide amt)
+
+(define (print-ledger journal)
+  (define j (for/fold ([curr-ledger empty])
+            ([entry (in-list journal)])
+    (entry curr-ledger)))
+  (display j)
+  journal)
