@@ -89,12 +89,15 @@
   (display (ledger ast lbt rde))
   (for/fold ([cl (ledger ast lbt rde)])
             ([e (in-list j)])
-    (cond
-      [(equal? "d" e) (set! cl empty)]
-      [(equal? "c" e) (print-info cl)]
-      [(equal? "l" e) (print-ledger cl)]
-      [else (cons e cl)]))
+    (set! e (rest e))
+    (define d (first e))
+    (set! e (rest e))
+    (define c (first e))
+    (add-to-ledger cl d c))
   journal)
+
+(define (add-to-ledger l d c)
+  l)
 
 (struct assets ([cash #:auto #:mutable] [equipment #:auto #:mutable] [supplies #:auto #:mutable])
   #:auto-value empty
