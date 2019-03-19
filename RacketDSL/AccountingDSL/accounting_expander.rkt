@@ -89,17 +89,17 @@
   (display (assets))
   journal)
 
-(struct assets ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [expense #:auto #:mutable])
+(struct assets ([cash #:auto #:mutable] [equipment #:auto #:mutable] [supplies #:auto #:mutable])
   #:auto-value empty
   #:transparent
   #:extra-constructor-name Assets)
 
-(struct liabilities ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [expense #:auto #:mutable])
+(struct liabilities ([accounts-payable #:auto #:mutable] [unearned-revenue #:auto #:mutable])
   #:auto-value empty
   #:transparent
-  #:extra-constructor-name Assets)
+  #:extra-constructor-name Liabilities)
 
 (struct rde ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [expense #:auto #:mutable])
   #:auto-value empty
   #:transparent
-  #:extra-constructor-name Assets)
+  #:extra-constructor-name Revenue-Dividends-Expenses)
