@@ -86,20 +86,30 @@
             ([entry (in-list journal)])
     (entry curr-ledger)))
   (display j)
-  (display (assets))
+  (display (ledger ast lbt rde))
+  (for/fold ([cl (ledger ast lbt rde)])
+            ([e (in-list j)])
+    (cond
+      [(equal? "d" e) (set! cl empty)]
+      [(equal? "c" e) (print-info cl)]
+      [(equal? "l" e) (print-ledger cl)]
+      [else (cons e cl)]))
   journal)
 
 (struct assets ([cash #:auto #:mutable] [equipment #:auto #:mutable] [supplies #:auto #:mutable])
   #:auto-value empty
   #:transparent
-  #:extra-constructor-name Assets)
+  #:extra-constructor-name ast)
 
 (struct liabilities ([accounts-payable #:auto #:mutable] [unearned-revenue #:auto #:mutable])
   #:auto-value empty
   #:transparent
-  #:extra-constructor-name Liabilities)
+  #:extra-constructor-name lbt)
 
 (struct rde ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [expense #:auto #:mutable])
   #:auto-value empty
   #:transparent
   #:extra-constructor-name Revenue-Dividends-Expenses)
+
+(struct ledger (assets liabilities rde)
+  #:transparent)
