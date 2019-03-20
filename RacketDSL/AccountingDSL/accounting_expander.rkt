@@ -86,33 +86,86 @@
             ([entry (in-list journal)])
     (entry curr-ledger)))
   (display j)
-  (display (ledger ast lbt rde))
-  (for/fold ([cl (ledger ast lbt rde)])
+  (define ast (assets))
+  (define lbt (liabilities))
+  (define r (rde))
+  (display (list ast lbt r))
+  (display (for/fold ([cl (list ast lbt r)])
             ([e (in-list j)])
     (set! e (rest e))
     (define d (first e))
     (set! e (rest e))
     (define c (first e))
-    (add-to-ledger cl d c))
+    (add-to-ledger cl d c)))
   journal)
 
 (define (add-to-ledger l d c)
-  l)
+  (define l-one (for/fold ([led l])
+            ([ds (in-list d)])
+    (define val (first ds))
+    (set! ds (rest ds))
+    (define ac (first ds))
+    (cond
+      [(equal? "cash" ds) (access-cash-d led val)]
+      [(equal? "equipment" ds) (access-equipment-d led val)]
+      [else (access-supplies-d led val)])))
+  (for/fold ([led l-one])
+            ([cs (in-list c)])
+    (define val (first cs))
+    (set! cs (rest cs))
+    (define ac (first cs))
+    (cond
+      [(equal? "cash" ac) (access-cash-c led val)]
+      [else (access-stock-c led val)])))
+
+(define (access-cash-d led val)
+  (define ats (first led))
+  (define fst (first (assets-cash ats)))
+  (set! fst (cons val fst))
+  (define c (cons fst (rest (assets-cash ats))))
+  (set-assets-cash! ats c)
+  (cons ats (rest led)))
+
+(define (access-equipment-d led val)
+  (define ats (first led))
+  (define fst (first (assets-equipment ats)))
+  (set! fst (cons val fst))
+  (define c (cons fst (rest (assets-equipment ats))))
+  (set-assets-equipment! ats c)
+  (cons ats (rest led)))
+
+(define (access-supplies-d led val)
+  (define ats (first led))
+  (define fst (first (assets-supplies ats)))
+  (set! fst (cons val fst))
+  (define c (cons fst (rest (assets-supplies ats))))
+  (set-assets-supplies! ats c)
+  (cons ats (rest led)))
+
+(define (access-cash-c led val)
+  (define ats (first led))
+  (define snd (first (rest (assets-cash ats))))
+  (set! snd (cons val snd))
+  (define c (cons(first (assets-cash ats)) snd))
+  (set-assets-cash! ats c)
+  (cons ats (rest led)))
+
+(define (access-stock-c led val)
+  (define ats (third led))
+  (define snd (second (rde-stock ats)))
+  (set! snd (cons val snd))
+  (define c (cons(first (rde-stock ats)) snd))
+  (set-rde-stock! ats c)
+  (cons (first led) (cons (second led) ats)))
 
 (struct assets ([cash #:auto #:mutable] [equipment #:auto #:mutable] [supplies #:auto #:mutable])
-  #:auto-value empty
-  #:transparent
-  #:extra-constructor-name ast)
+  #:auto-value '(() ())
+  #:transparent)
 
 (struct liabilities ([accounts-payable #:auto #:mutable] [unearned-revenue #:auto #:mutable])
-  #:auto-value empty
-  #:transparent
-  #:extra-constructor-name lbt)
-
-(struct rde ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [expense #:auto #:mutable])
-  #:auto-value empty
-  #:transparent
-  #:extra-constructor-name Revenue-Dividends-Expenses)
-
-(struct ledger (assets liabilities rde)
+  #:auto-value '(() ())
   #:transparent)
+
+(struct rde ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [stock #:auto #:mutable])
+  #:auto-value '(() ())
+  #:transparent) 
