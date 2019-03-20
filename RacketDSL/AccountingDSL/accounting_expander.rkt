@@ -120,7 +120,7 @@
   (define ats (first led))
   (define fst (first (assets-cash ats)))
   (set! fst (cons val fst))
-  (define c (cons fst (rest (assets-cash ats))))
+  (define c (list fst (second (assets-cash ats))))
   (set-assets-cash! ats c)
   (list ats (second led) (third led)))
 
@@ -128,7 +128,7 @@
   (define ats (first led))
   (define fst (first (assets-equipment ats)))
   (set! fst (cons val fst))
-  (define c (cons fst (rest (assets-equipment ats))))
+  (define c (list fst (second (assets-equipment ats))))
   (set-assets-equipment! ats c)
   (list ats (second led) (third led)))
 
