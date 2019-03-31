@@ -74,6 +74,17 @@
       (print-ledger journal)))
 (provide ledger)
 
+(define-macro (show ARG)
+  #' (lambda (journal)
+      (display journal)
+       journal))
+(provide show)
+
+(define-macro (clear ARG)
+  #' (lambda (journal)
+      empty))
+(provide clear)
+
 (define (print-ledger journal)
   (define ast (assets))
   (define lbt (liabilities))

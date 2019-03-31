@@ -3,4 +3,4 @@
 
 2020-12-20<supplies 5000><cash 5>
 
-[l]
+show
