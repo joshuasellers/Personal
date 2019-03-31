@@ -1,6 +1,12 @@
+
 #lang br
-(require "parser.rkt")
+(require "accounting_reader.rkt" "parser.rkt" brag/support)
 
-(parse-to-datum "01")
+(define str #<<HERE
+10 print "hello" : print "world"
+20 goto 9 + 10 + 11
+30 end
+HERE
+)
 
-;<equipment-20000><cash-10000,stock-10000>
+(parse-to-datum (apply-tokenizer make-tokenizer str))

@@ -1,0 +1,1 @@
+("7.2" racket ("3d6520d7ac2a7f8750903cf9c3f15490fc6265d3" . "a1cd65c21f9c1aa778a25bce2cc33568c690c048") #"/Users/joshuasellers/Documents/github/Personal/RacketDSL/AccountingDSL/lexer.rkt" (collects #"br" #"main.rkt") (collects #"brag" #"support.rkt") (collects #"errortrace" #"errortrace-key.rkt") (collects #"racket" #"runtime-config.rkt"))
