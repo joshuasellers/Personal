@@ -3,31 +3,21 @@
 
 (define-macro (ac-module-begin PARSE-TREE)
   #'(#%module-begin
-    'PARSE-TREE))
+    PARSE-TREE))
 (provide (rename-out [ac-module-begin #%module-begin]))
 
 (define (fold-funcs apl ac-funcs)
   (for/fold ([current-apl apl])
             ([ac-func (in-list ac-funcs)])
-    (cond
-      [(equal? "d" ac-func) (set! current-apl empty)]
-      [(equal? "c" ac-func) (print-info current-apl)]
-      [(equal? "l" ac-func) (print-ledger current-apl)]
-      [else (cons ac-func current-apl)])))
+    (ac-func current-apl)))
 
-(define (print-info journal)
-  (display (for/fold ([curr-ledger empty])
-            ([entry (in-list journal)])
-    (entry curr-ledger)))
-  journal)
-
-(define-macro (ac-line ENTRIES ...)
+(define-macro (ac-program ENTRIES ...)
   #'(begin
       (define ledger empty)
       (void (fold-funcs ledger (list ENTRIES ...)))))
-(provide ac-line)
+(provide ac-program)
 
-(define-macro (journal-entry "[" INFO ... "]")
+(define-macro (journal-entry INFO ...)
   #'(lambda (ledger)
       (define entry (list INFO ...))
       (define dt (first entry))
@@ -36,8 +26,7 @@
       (set! entry (rest entry))
       (define c (first entry))
       (define e (list dt d c))
-      (cons e ledger)
-      ))
+      (cons e ledger)))
 (provide journal-entry)
 
 (define-macro (entry-date DATE ...)
@@ -68,28 +57,29 @@
             ([ac (in-list acs)])
     (cons ac current-apl)))
 
-
 (define-macro (command COMMAND ...)
   #' "command")
 (provide command)
 
-(define-macro (account LETTER ...)
-  #' (apply string-append (list LETTER ...)))
+(define-macro (account ACT)
+  #' ACT)
 (provide account)
 
-(define-macro (amt NUMBER ...)
-  #' (apply string-append (list NUMBER ...)))
+(define-macro (amt NUM)
+  #' NUM)
 (provide amt)
 
+(define-macro (ledger ARG)
+  #' (lambda (journal)
+      (print-ledger journal)))
+(provide ledger)
+
 (define (print-ledger journal)
-  (define j (for/fold ([curr-ledger empty])
-            ([entry (in-list journal)])
-    (entry curr-ledger)))
   (define ast (assets))
   (define lbt (liabilities))
   (define r (rde))
   (display (for/fold ([cl (list ast lbt r)])
-            ([e (in-list j)])
+            ([e (in-list journal)])
     (set! e (rest e))
     (define d (first e))
     (set! e (rest e))
