@@ -14,6 +14,7 @@
    [date (token 'DATE lexeme)]
    [digits (token 'INTEGER (string->number lexeme))]
    [account (token 'ACCOUNT lexeme)]
+   [(:or "[c]" "[l]" "[d]") (token lexeme lexeme)]
    [(char-set "cdl<>,") lexeme]))
 
 (provide basic-lexer)

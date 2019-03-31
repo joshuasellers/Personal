@@ -2,7 +2,10 @@
 
 ac-program : [ac-line] (NEWLINE [ac-line])*
 ac-line : journal-entry | command
-command : "d" | "c" | "l"
+command : display | clear | ledger
+display : "[d]"
+clear : "[c]"
+ledger : "[l]"
 journal-entry : date /"<" debits /">" /"<" credits /">"
 date : DATE
 debits : debit (/"," debit)*
