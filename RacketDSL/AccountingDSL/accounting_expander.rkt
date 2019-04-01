@@ -80,9 +80,19 @@
        (list journal date)))
 (provide ledger)
 
-(define-macro (show ARG)
+(define (show-entries dates journal)
+  (for/fold ([entries empty])
+            ([date (in-list dates)])
+    (cons (for/fold ([entry empty])
+              ([e (in-list journal)])
+      (cond
+      [(date=? (car e) date) e]
+      [else entry])) entries)))
+
+(define-macro (show ARGS ...)
   #' (lambda (journal date)
-      (display journal)
+       (define args (cdr (list ARGS ...)))
+       (if (empty? args) (display journal) (display (show-entries args journal)))
        (list journal date)))
 (provide show)
 

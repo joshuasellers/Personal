@@ -3,7 +3,7 @@
 ac-program : [@ac-line] (/NEWLINE [@ac-line])*
 ac-line : journal-entry | @command
 command : show | clear | ledger 
-show : "show" ;[entry-date] ("," entry-date)*
+show : "show" [entry-date] (entry-date)*
 clear : "clear"
 ledger : "ledger"
 journal-entry : entry-date /"<" debits /">" /"<" credits /">"
