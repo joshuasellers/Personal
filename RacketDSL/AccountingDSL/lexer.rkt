@@ -15,6 +15,6 @@
    [digits (token 'INTEGER (string->number lexeme))]
    [account (token 'ACCOUNT lexeme)]
    [(:or "clear" "ledger" "show") (token lexeme lexeme)]
-   [(char-set "<>,") lexeme]))
+   [(char-set "%<>,") lexeme]))
 
 (provide basic-lexer)

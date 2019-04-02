@@ -125,7 +125,7 @@
 (define-macro (show ARGS ...)
   #' (lambda (journal date)
        (define args (cdr (list ARGS ...)))
-       (if (empty? args) (display journal) (display (show-entries args journal)))
+       (if (empty? args) (displayln journal) (displayln (show-entries args journal)))
        (list journal date)))
 (provide show)
 
@@ -133,10 +133,22 @@
 ;; clear funcs ;;
 ;;;;;;;;;;;;;;;;;
 
+(define (delete-entries date journal)
+  
+  (if (date? date)
+      (for/fold ([entry empty])
+                ([e (in-list journal)])
+        (cond
+          [(date=? (car e) date) entry]
+          [else (cons e entry)]))
+      (list-tail journal date)
+      )
+  )
+
 (define-macro (clear ARGS ...)
   #' (lambda (journal date)
        (define args (cdr (list ARGS ...)))
-       (if (empty? args) (list empty date) (display (show-entries args journal)))))
+       (if (empty? args) (list empty date) (list (delete-entries (car args) journal) date))))
 (provide clear)
 
 ;;;;;;;;;;;;;;;;;;

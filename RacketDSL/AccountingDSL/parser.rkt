@@ -4,7 +4,7 @@ ac-program : [@ac-line] (/NEWLINE [@ac-line])*
 ac-line : journal-entry | @command
 command : show | clear | ledger 
 show : "show" [entry-date] (entry-date)*
-clear : "clear" [[entry-date "," entry-date] | [entry-date] ]
+clear : "clear" ([entry-date] | [INTEGER])
 ledger : "ledger"
 journal-entry : entry-date /"<" debits /">" /"<" credits /">"
 entry-date : DATE

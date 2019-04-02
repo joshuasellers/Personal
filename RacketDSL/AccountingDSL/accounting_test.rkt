@@ -4,3 +4,11 @@
 2020-12-20<supplies 5000><cash 5>
 
 show 2020-12-20 1920-02-19
+
+clear 1
+
+show
+
+clear 1
+
+show
