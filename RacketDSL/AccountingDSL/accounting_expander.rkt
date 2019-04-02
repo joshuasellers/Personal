@@ -13,7 +13,8 @@
 (define (fold-funcs apl ac-funcs)
   (for/fold ([current-apl apl])
             ([ac-func (in-list ac-funcs)])
-    (apply ac-func current-apl)))
+    (define ret (apply ac-func current-apl))
+    (if (equal? (length ret) 2) ret (cdr ret))))
 
 (define-macro (ac-program ENTRIES ...)
   #'(begin
@@ -113,19 +114,30 @@
 ;; show funcs ;;
 ;;;;;;;;;;;;;;;;
 
-(define (show-entries dates journal)
-  (for/fold ([entries empty])
-            ([date (in-list dates)])
-    (cons (for/fold ([entry empty])
-              ([e (in-list journal)])
-      (cond
-      [(date=? (car e) date) e]
-      [else entry])) entries)))
+(define (show-entries dates journal date)
+  (if (date? (car dates))
+      (for/fold ([entries empty])
+                ([date (in-list dates)])
+        (cons (for/fold ([entry empty])
+                        ([e (in-list journal)])
+                (cond
+                  [(date=? (car e) date) e]
+                  [else entry])) entries))
+      (if (number? (car dates))
+          (car dates)
+          (if (string? (car dates))
+              (car dates)
+              (car (apply (car dates) (list journal date)))
+              )
+          )
+      )
+  )
+  
 
 (define-macro (show ARGS ...)
   #' (lambda (journal date)
        (define args (cdr (list ARGS ...)))
-       (if (empty? args) (displayln journal) (displayln (show-entries args journal)))
+       (if (empty? args) (displayln journal) (displayln (show-entries args journal date)))
        (list journal date)))
 (provide show)
 
@@ -150,6 +162,15 @@
        (define args (cdr (list ARGS ...)))
        (if (empty? args) (list empty date) (list (delete-entries (car args) journal) date))))
 (provide clear)
+
+;;;;;;;;;;;;;;;
+;; len funcs ;;
+;;;;;;;;;;;;;;;
+
+(define-macro (len ARG)
+  #' (lambda (journal date)
+       (list (length journal) journal date)))
+(provide len)
 
 ;;;;;;;;;;;;;;;;;;
 ;; ledger funcs ;;

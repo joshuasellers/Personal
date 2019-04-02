@@ -5,6 +5,8 @@
 
 show 2020-12-20 1920-02-19
 
+show len
+
 clear 1
 
 show
