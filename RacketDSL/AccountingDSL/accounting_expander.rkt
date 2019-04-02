@@ -6,6 +6,10 @@
     PARSE-TREE))
 (provide (rename-out [ac-module-begin #%module-begin]))
 
+;;;;;;;;;;;;;;;;;;;;;;
+;; ac-program funcs ;;
+;;;;;;;;;;;;;;;;;;;;;;
+
 (define (fold-funcs apl ac-funcs)
   (for/fold ([current-apl apl])
             ([ac-func (in-list ac-funcs)])
@@ -16,6 +20,10 @@
       (define ledger (list empty null))
       (void (fold-funcs ledger (list ENTRIES ...)))))
 (provide ac-program)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; journal-entry funcs ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define-macro (journal-entry INFO ...)
   #'(lambda (ledger date)
@@ -34,51 +42,76 @@
       (list (cons e ledger) date)))
 (provide journal-entry)
 
+;;;;;;;;;;;;;;;;;;;;;;
+;; entry-date funcs ;;
+;;;;;;;;;;;;;;;;;;;;;;
+
 (define-macro (entry-date DATE ...)
   #' (iso8601->date (apply string-append (list DATE ...))))
 (provide entry-date)
+
+;;;;;;;;;;;;;;;;;;
+;; debits funcs ;;
+;;;;;;;;;;;;;;;;;;
 
 (define-macro (debits DEBITS ...)
   #' (fold-accs empty (list DEBITS ...))
   )
 (provide debits)
 
+;;;;;;;;;;;;;;;;;
+;; debit funcs ;;
+;;;;;;;;;;;;;;;;;
+
 (define-macro (debit INFO ...)
   #' (fold-accs empty (list INFO ...))
   )
 (provide debit)
 
+;;;;;;;;;;;;;;;;;;;
+;; credits funcs ;;
+;;;;;;;;;;;;;;;;;;;
+
 (define-macro (credits CREDITS ...)
   #' (fold-accs empty (list CREDITS ...)))
 (provide credits)
+
+;;;;;;;;;;;;;;;;;;
+;; credit funcs ;;
+;;;;;;;;;;;;;;;;;;
 
 (define-macro (credit INFO ...)
   #' (fold-accs empty (list INFO ...))
   )
 (provide credit)
 
-(define (fold-accs ledger acs)
-  (for/fold ([current-apl ledger])
-            ([ac (in-list acs)])
-    (cons ac current-apl)))
-
-(define-macro (command COMMAND ...)
-  #' "command")
-(provide command)
+;;;;;;;;;;;;;;;;;;;
+;; account funcs ;;
+;;;;;;;;;;;;;;;;;;;
 
 (define-macro (account ACT)
   #' ACT)
 (provide account)
 
+;;;;;;;;;
+;; amt ;;
+;;;;;;;;;
+
 (define-macro (amt NUM)
   #' NUM)
 (provide amt)
 
-(define-macro (ledger ARG)
-  #' (lambda (journal date)
-      (print-ledger journal)
-       (list journal date)))
-(provide ledger)
+;;;;;;;;;;;;;;;;;;;
+;; command funcs ;;
+;;;;;;;;;;;;;;;;;;;
+
+(define-macro (command COMMAND ...)
+  #' "command")
+(provide command)
+
+;;;;;;;;;;;;;;;;
+;; show funcs ;;
+;;;;;;;;;;;;;;;;
 
 (define (show-entries dates journal)
   (for/fold ([entries empty])
@@ -96,10 +129,30 @@
        (list journal date)))
 (provide show)
 
-(define-macro (clear ARG)
+;;;;;;;;;;;;;;;;;
+;; clear funcs ;;
+;;;;;;;;;;;;;;;;;
+
+(define-macro (clear ARGS ...)
   #' (lambda (journal date)
-      (list empty date)))
+       (define args (cdr (list ARGS ...)))
+       (if (empty? args) (list empty date) (display (show-entries args journal)))))
 (provide clear)
+
+;;;;;;;;;;;;;;;;;;
+;; ledger funcs ;;
+;;;;;;;;;;;;;;;;;;
+
+(define (fold-accs ledger acs)
+  (for/fold ([current-apl ledger])
+            ([ac (in-list acs)])
+    (cons ac current-apl)))
+
+(define-macro (ledger ARG)
+  #' (lambda (journal date)
+      (print-ledger journal)
+       (list journal date)))
+(provide ledger)
 
 (define (print-ledger journal)
   (define ast (assets))
