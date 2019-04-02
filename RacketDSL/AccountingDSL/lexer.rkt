@@ -7,6 +7,8 @@
 
 (define-lex-abbrev account (intersection (:+ alphabetic) (complement "ledger") (complement "show") (complement "clear") (complement "len")))
 
+(define-lex-abbrev bool (union "#t" "#f"))
+
 (define basic-lexer
   (lexer-srcloc
    ["\n" (token 'NEWLINE lexeme)]
@@ -14,7 +16,8 @@
    [date (token 'DATE lexeme)]
    [digits (token 'INTEGER (string->number lexeme))]
    [account (token 'ACCOUNT lexeme)]
+   [bool (token 'BOOL lexeme)]
    [(:or "clear" "ledger" "show" "len") (token lexeme lexeme)]
-   [(char-set "%<>,") lexeme]))
+   [(char-set "%<>{}#[],?:") lexeme]))
 
 (provide basic-lexer)

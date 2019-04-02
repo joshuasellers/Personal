@@ -1,13 +1,24 @@
 #lang brag
 
 ac-program : [@ac-line] (/NEWLINE [@ac-line])*
-ac-line : journal-entry | @command
-command : show | clear | ledger | len
+ac-line : journal-entry | @command | conditional | @value
+
+
+conditional : "["((bool-func @value @value) | bool) "]" /"?" @command ":" @command
+bool-func: "<" | "<=" | ">" | ">=" | "=="
+value : len | bool | int
+int : INTEGER
+len : "len"
+bool : BOOL
+
+
+command : show | clear | ledger
 show : "show" ([entry-date] (entry-date)* | [ACCOUNT] | [INTEGER] | [len])
 clear : "clear" ([entry-date] | [INTEGER])
 ledger : "ledger"
-len : "len"
-journal-entry : entry-date /"<" debits /">" /"<" credits /">"
+
+
+journal-entry : entry-date /"{" debits /"}" /"{" credits /"}"
 entry-date : DATE
 debits : debit (/"," debit)*
 credits : credit (/"," credit)*

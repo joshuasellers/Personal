@@ -160,7 +160,7 @@
 (define-macro (clear ARGS ...)
   #' (lambda (journal date)
        (define args (cdr (list ARGS ...)))
-       (if (empty? args) (list empty date) (list (delete-entries (car args) journal) date))))
+       (if (empty? args) (list empty null) (list (delete-entries (car args) journal) date))))
 (provide clear)
 
 ;;;;;;;;;;;;;;;
@@ -269,4 +269,59 @@
 
 (struct rde ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [stock #:auto #:mutable])
   #:auto-value '(() ())
-  #:transparent) 
+  #:transparent)
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;; conditional funcs ;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+(define-macro (conditional "[" ARGS ... "]" CMF ":" CMS)
+  #' (lambda (journal date)
+       (define cond (list ARGS ...))
+       (if (equal? (length cond) 1)
+           (set! cond (car (apply (car cond) (list journal date))))
+           (set! cond ((car (apply (car cond) (list journal date)))
+                       (car (apply (car (list-tail cond 1)) (list journal date)))
+                       (car (apply (car (list-tail cond 2)) (list journal date))))))
+       (if cond
+           (apply CMF (list journal date))
+           (apply CMS (list journal date)))))
+(provide conditional)
+
+;;;;;;;;;;;;;;;;;
+;; bool funcs ;;
+;;;;;;;;;;;;;;;;;
+
+(define-macro (bool ARG)
+  #' (lambda (journal date)
+      (if (equal? ARG "#t")
+                  (list #t journal date)
+                  (list #f journal date))))
+(provide bool)
+
+;;;;;;;;;;;;;;;
+;; int funcs ;;
+;;;;;;;;;;;;;;;
+
+(define-macro (int ARG)
+  #' (lambda (journal date)
+       (list ARG journal date)))
+(provide int)
+
+;;;;;;;;;;;;;;;;;
+;; bool funcs ;;
+;;;;;;;;;;;;;;;;;
+
+(define-macro (bool-func ARG)
+  #' (lambda (journal date)
+       (if (equal? ARG "<")
+           (list < journal date)
+           (if (equal? ARG ">")
+               (list > journal date)
+               (if (equal? ARG "<=")
+                   (list <= journal date)
+                   (if (equal? ARG ">=")
+                       (list >= journal date)
+                       (list equal? journal date)))))))
+(provide bool-func)
+
