@@ -5,7 +5,7 @@
 
 (define-lex-abbrev date (:: (:= 4 (char-set "0123456789")) "-" (:** 1 2 (char-set "0123456789")) "-" (:** 1 2 (char-set "0123456789")) ))
 
-(define-lex-abbrev account (intersection (:+ alphabetic) (complement "ledger") (complement "show") (complement "clear") (complement "len")))
+(define-lex-abbrev account (intersection (:+ alphabetic) (complement "ledger") (complement "date") (complement "show") (complement "clear") (complement "len")))
 
 (define-lex-abbrev bool (union "#t" "#f"))
 
@@ -17,7 +17,7 @@
    [digits (token 'INTEGER (string->number lexeme))]
    [account (token 'ACCOUNT lexeme)]
    [bool (token 'BOOL lexeme)]
-   [(:or "clear" "ledger" "show" "len") (token lexeme lexeme)]
+   [(:or "clear" "ledger" "show" "len" "date") (token lexeme lexeme)]
    [(char-set "%<>{}#[],?:") lexeme]))
 
 (provide basic-lexer)

@@ -280,9 +280,13 @@
        (define cond (list ARGS ...))
        (if (equal? (length cond) 1)
            (set! cond (car (apply (car cond) (list journal date))))
-           (set! cond ((car (apply (car cond) (list journal date)))
-                       (car (apply (car (list-tail cond 1)) (list journal date)))
-                       (car (apply (car (list-tail cond 2)) (list journal date))))))
+           (if (date? (car (apply (car (list-tail cond 1)) (list journal date))))
+                      (set! cond ((get-date-func (car (apply (car cond) (list journal date))))
+                                  (car (apply (car (list-tail cond 1)) (list journal date)))
+                                  (car (apply (car (list-tail cond 2)) (list journal date)))))
+                      (set! cond ((car (apply (car cond) (list journal date)))
+                                  (car (apply (car (list-tail cond 1)) (list journal date)))
+                                  (car (apply (car (list-tail cond 2)) (list journal date)))))))
        (if cond
            (apply CMF (list journal date))
            (apply CMS (list journal date)))))
@@ -308,6 +312,18 @@
        (list ARG journal date)))
 (provide int)
 
+;;;;;;;;;;;;;;;;
+;; date funcs ;;
+;;;;;;;;;;;;;;;;
+
+(define-macro (date ARGS ...)
+  #' (lambda (journal date)
+       (define args (list ARGS ...))
+       (if (= (length args) 1)
+           (list date journal date)
+           (list (car (cdr args)) journal date))))
+(provide date)
+
 ;;;;;;;;;;;;;;;;;
 ;; bool funcs ;;
 ;;;;;;;;;;;;;;;;;
@@ -325,3 +341,15 @@
                        (list equal? journal date)))))))
 (provide bool-func)
 
+(define-macro (get-date-func ARG)
+  #' (lambda (journal date)
+       (if (equal? ARG "<")
+           (list date<? journal date)
+           (if (equal? ARG ">")
+               (list date>? journal date)
+               (if (equal? ARG "<=")
+                   (list date<=? journal date)
+                   (if (equal? ARG ">=")
+                       (list date>=? journal date)
+                       (list date=? journal date)))))))
+(provide bool-func)

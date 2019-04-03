@@ -17,8 +17,8 @@ show
 
 2021-12-20{supplies 900}{cash 50000}
 
-show
+show date
 
-[< 2 3]?show len:clear
+[> date date 2020-12-12]?show len:clear
 
 show
