@@ -33,6 +33,8 @@ show
 
 show date
 
+ledger
+
 /> len 1/ clear 1 show?
 
 show
