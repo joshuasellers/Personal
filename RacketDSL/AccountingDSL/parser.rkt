@@ -1,10 +1,11 @@
 #lang brag
 
 ac-program : [@ac-line] (/NEWLINE [@ac-line])*
-ac-line : journal-entry | @command | conditional | @value
+ac-line : journal-entry | @command | conditional | @value | loop
 
 
 conditional : "["((bool-func @value @value) | bool) "]" /"?" @command ":" @command
+loop : "/"((bool-func @value @value) | bool) "/"  (@ac-line )* "?"
 bool-func: "<" | "<=" | ">" | ">=" | "=="
 value : len | bool | int | date
 int : INTEGER

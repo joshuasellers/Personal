@@ -1,5 +1,6 @@
 #lang br/quicklang
 (require gregor)
+(require dyoo-while-loop)
 
 (define-macro (ac-module-begin PARSE-TREE)
   #'(#%module-begin
@@ -271,6 +272,40 @@
   #:auto-value '(() ())
   #:transparent)
 
+;;;;;;;;;;;;;;;;
+;; loop funcs ;;
+;;;;;;;;;;;;;;;;
+
+(define-macro (loop "/" ARGS ... "/" ACLINES ... "?")
+  #' (lambda (journal date)
+       (define cond (list ARGS ...))
+       (define condition (if (equal? (length cond) 1)
+                             (set! cond (car (apply (car cond) (list journal date))))
+                             (if (date? (car (apply (car (list-tail cond 1)) (list journal date))))
+                                 ((get-date-func (car (apply (car cond) (list journal date))))
+                                  (car (apply (car (list-tail cond 1)) (list journal date)))
+                                  (car (apply (car (list-tail cond 2)) (list journal date))))
+                                 ((car (apply (car cond) (list journal date)))
+                                  (car (apply (car (list-tail cond 1)) (list journal date)))
+                                  (car (apply (car (list-tail cond 2)) (list journal date)))))))
+       (define contents (list ACLINES ...))
+       (define args (list journal date))
+       (while condition
+              (displayln condition)
+              (set! condition (if (equal? (length cond) 1)
+                                  (set! cond (car (apply (car cond) args)))
+                                  (if (date? (car (apply (car (list-tail cond 1)) args)))
+                                      ((get-date-func (car (apply (car cond) args)))
+                                       (car (apply (car (list-tail cond 1)) args))
+                                       (car (apply (car (list-tail cond 2)) args)))
+                                      ((car (apply (car cond) (list journal date)))
+                                       (car (apply (car (list-tail cond 1)) args))
+                                       (car (apply (car (list-tail cond 2)) args))))))
+              (set! args (fold-funcs args contents))
+              )
+       args))
+(provide loop)
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; conditional funcs ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -281,7 +316,7 @@
        (if (equal? (length cond) 1)
            (set! cond (car (apply (car cond) (list journal date))))
            (if (date? (car (apply (car (list-tail cond 1)) (list journal date))))
-                      (set! cond ((get-date-func (car (apply (car cond) (list journal date))))
+                      (set! cond ((car (apply (get-date-func (car (apply (car cond) (list journal date)))) (list journal date)))
                                   (car (apply (car (list-tail cond 1)) (list journal date)))
                                   (car (apply (car (list-tail cond 2)) (list journal date)))))
                       (set! cond ((car (apply (car cond) (list journal date)))
@@ -321,7 +356,7 @@
        (define args (list ARGS ...))
        (if (= (length args) 1)
            (list date journal date)
-           (list (car (cdr args)) journal date))))
+           (list (iso8601->date (car (cdr args))) journal date))))
 (provide date)
 
 ;;;;;;;;;;;;;;;;;
@@ -343,13 +378,13 @@
 
 (define-macro (get-date-func ARG)
   #' (lambda (journal date)
-       (if (equal? ARG "<")
+       (if (equal? ARG <)
            (list date<? journal date)
-           (if (equal? ARG ">")
+           (if (equal? ARG >)
                (list date>? journal date)
-               (if (equal? ARG "<=")
+               (if (equal? ARG <=)
                    (list date<=? journal date)
-                   (if (equal? ARG ">=")
+                   (if (equal? ARG >=)
                        (list date>=? journal date)
                        (list date=? journal date)))))))
 (provide bool-func)

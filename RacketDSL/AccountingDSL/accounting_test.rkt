@@ -22,3 +22,15 @@ show date
 [> date date 2020-12-12]?show len:clear
 
 show
+
+2022-03-12{equipment 4}{cash 30}
+
+show
+
+2024-02-22{cash 5000}{cash 400}
+
+show
+
+/> len 1/ clear 1 ?
+
+show

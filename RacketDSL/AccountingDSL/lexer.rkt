@@ -17,7 +17,7 @@
    [digits (token 'INTEGER (string->number lexeme))]
    [account (token 'ACCOUNT lexeme)]
    [bool (token 'BOOL lexeme)]
-   [(:or "clear" "ledger" "show" "len" "date") (token lexeme lexeme)]
-   [(char-set "%<>{}#[],?:") lexeme]))
+   [(:or "clear" "ledger" "show" "len" "date" ">" "<" "=" "<=" ">=") (token lexeme lexeme)]
+   [(char-set "/=%<>{}#[],?:") lexeme]))
 
 (provide basic-lexer)

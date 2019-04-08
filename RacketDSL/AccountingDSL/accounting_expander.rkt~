@@ -6,29 +6,28 @@
     PARSE-TREE))
 (provide (rename-out [ac-module-begin #%module-begin]))
 
+;;;;;;;;;;;;;;;;;;;;;;
+;; ac-program funcs ;;
+;;;;;;;;;;;;;;;;;;;;;;
+
 (define (fold-funcs apl ac-funcs)
   (for/fold ([current-apl apl])
             ([ac-func (in-list ac-funcs)])
-    (cond
-      [(equal? "d" ac-func) (set! current-apl empty)]
-      [(equal? "c" ac-func) (print-info current-apl)]
-      [(equal? "l" ac-func) (print-ledger current-apl)]
-      [else (cons ac-func current-apl)])))
+    (define ret (apply ac-func current-apl))
+    (if (equal? (length ret) 2) ret (cdr ret))))
 
-(define (print-info journal)
-  (display (for/fold ([curr-ledger empty])
-            ([entry (in-list journal)])
-    (entry curr-ledger)))
-  journal)
-
-(define-macro (ac-line ENTRIES ...)
+(define-macro (ac-program ENTRIES ...)
   #'(begin
-      (define ledger empty)
+      (define ledger (list empty null))
       (void (fold-funcs ledger (list ENTRIES ...)))))
-(provide ac-line)
+(provide ac-program)
 
-(define-macro (journal-entry "[" INFO ... "]")
-  #'(lambda (ledger)
+;;;;;;;;;;;;;;;;;;;;;;;;;
+;; journal-entry funcs ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define-macro (journal-entry INFO ...)
+  #'(lambda (ledger date)
       (define entry (list INFO ...))
       (define dt (first entry))
       (set! entry (rest entry))
@@ -36,60 +35,164 @@
       (set! entry (rest entry))
       (define c (first entry))
       (define e (list dt d c))
-      (cons e ledger)
-      ))
+      (if (null? date)
+          (set! date dt)
+          (if (date<? dt date)
+              (error "incorrect order of date")
+              (set! date dt)))
+      (list (cons e ledger) date)))
 (provide journal-entry)
+
+;;;;;;;;;;;;;;;;;;;;;;
+;; entry-date funcs ;;
+;;;;;;;;;;;;;;;;;;;;;;
 
 (define-macro (entry-date DATE ...)
   #' (iso8601->date (apply string-append (list DATE ...))))
 (provide entry-date)
+
+;;;;;;;;;;;;;;;;;;
+;; debits funcs ;;
+;;;;;;;;;;;;;;;;;;
 
 (define-macro (debits DEBITS ...)
   #' (fold-accs empty (list DEBITS ...))
   )
 (provide debits)
 
+;;;;;;;;;;;;;;;;;
+;; debit funcs ;;
+;;;;;;;;;;;;;;;;;
+
 (define-macro (debit INFO ...)
   #' (fold-accs empty (list INFO ...))
   )
 (provide debit)
 
+;;;;;;;;;;;;;;;;;;;
+;; credits funcs ;;
+;;;;;;;;;;;;;;;;;;;
+
 (define-macro (credits CREDITS ...)
   #' (fold-accs empty (list CREDITS ...)))
 (provide credits)
+
+;;;;;;;;;;;;;;;;;;
+;; credit funcs ;;
+;;;;;;;;;;;;;;;;;;
 
 (define-macro (credit INFO ...)
   #' (fold-accs empty (list INFO ...))
   )
 (provide credit)
 
-(define (fold-accs ledger acs)
-  (for/fold ([current-apl ledger])
-            ([ac (in-list acs)])
-    (cons ac current-apl)))
+;;;;;;;;;;;;;;;;;;;
+;; account funcs ;;
+;;;;;;;;;;;;;;;;;;;
 
+(define-macro (account ACT)
+  #' ACT)
+(provide account)
+
+;;;;;;;;;
+;; amt ;;
+;;;;;;;;;
+
+(define-macro (amt NUM)
+  #' NUM)
+(provide amt)
+
+;;;;;;;;;;;;;;;;;;;
+;; command funcs ;;
+;;;;;;;;;;;;;;;;;;;
 
 (define-macro (command COMMAND ...)
   #' "command")
 (provide command)
 
-(define-macro (account LETTER ...)
-  #' (apply string-append (list LETTER ...)))
-(provide account)
+;;;;;;;;;;;;;;;;
+;; show funcs ;;
+;;;;;;;;;;;;;;;;
 
-(define-macro (amt NUMBER ...)
-  #' (apply string-append (list NUMBER ...)))
-(provide amt)
+(define (show-entries dates journal date)
+  (if (date? (car dates))
+      (for/fold ([entries empty])
+                ([date (in-list dates)])
+        (cons (for/fold ([entry empty])
+                        ([e (in-list journal)])
+                (cond
+                  [(date=? (car e) date) e]
+                  [else entry])) entries))
+      (if (number? (car dates))
+          (car dates)
+          (if (string? (car dates))
+              (car dates)
+              (car (apply (car dates) (list journal date)))
+              )
+          )
+      )
+  )
+  
+
+(define-macro (show ARGS ...)
+  #' (lambda (journal date)
+       (define args (cdr (list ARGS ...)))
+       (if (empty? args) (displayln journal) (displayln (show-entries args journal date)))
+       (list journal date)))
+(provide show)
+
+;;;;;;;;;;;;;;;;;
+;; clear funcs ;;
+;;;;;;;;;;;;;;;;;
+
+(define (delete-entries date journal)
+  
+  (if (date? date)
+      (for/fold ([entry empty])
+                ([e (in-list journal)])
+        (cond
+          [(date=? (car e) date) entry]
+          [else (cons e entry)]))
+      (list-tail journal date)
+      )
+  )
+
+(define-macro (clear ARGS ...)
+  #' (lambda (journal date)
+       (define args (cdr (list ARGS ...)))
+       (if (empty? args) (list empty null) (list (delete-entries (car args) journal) date))))
+(provide clear)
+
+;;;;;;;;;;;;;;;
+;; len funcs ;;
+;;;;;;;;;;;;;;;
+
+(define-macro (len ARG)
+  #' (lambda (journal date)
+       (list (length journal) journal date)))
+(provide len)
+
+;;;;;;;;;;;;;;;;;;
+;; ledger funcs ;;
+;;;;;;;;;;;;;;;;;;
+
+(define (fold-accs ledger acs)
+  (for/fold ([current-apl ledger])
+            ([ac (in-list acs)])
+    (cons ac current-apl)))
+
+(define-macro (ledger ARG)
+  #' (lambda (journal date)
+      (print-ledger journal)
+       (list journal date)))
+(provide ledger)
 
 (define (print-ledger journal)
-  (define j (for/fold ([curr-ledger empty])
-            ([entry (in-list journal)])
-    (entry curr-ledger)))
   (define ast (assets))
   (define lbt (liabilities))
   (define r (rde))
   (display (for/fold ([cl (list ast lbt r)])
-            ([e (in-list j)])
+            ([e (in-list journal)])
     (set! e (rest e))
     (define d (first e))
     (set! e (rest e))
@@ -166,4 +269,87 @@
 
 (struct rde ([service-revenue #:auto #:mutable] [dividend #:auto #:mutable] [stock #:auto #:mutable])
   #:auto-value '(() ())
-  #:transparent) 
+  #:transparent)
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;; conditional funcs ;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+(define-macro (conditional "[" ARGS ... "]" CMF ":" CMS)
+  #' (lambda (journal date)
+       (define cond (list ARGS ...))
+       (if (equal? (length cond) 1)
+           (set! cond (car (apply (car cond) (list journal date))))
+           (if (date? (car (apply (car (list-tail cond 1)) (list journal date))))
+                      (set! cond ((get-date-func (car (apply (car cond) (list journal date))))
+                                  (car (apply (car (list-tail cond 1)) (list journal date)))
+                                  (car (apply (car (list-tail cond 2)) (list journal date)))))
+                      (set! cond ((car (apply (car cond) (list journal date)))
+                                  (car (apply (car (list-tail cond 1)) (list journal date)))
+                                  (car (apply (car (list-tail cond 2)) (list journal date)))))))
+       (if cond
+           (apply CMF (list journal date))
+           (apply CMS (list journal date)))))
+(provide conditional)
+
+;;;;;;;;;;;;;;;;;
+;; bool funcs ;;
+;;;;;;;;;;;;;;;;;
+
+(define-macro (bool ARG)
+  #' (lambda (journal date)
+      (if (equal? ARG "#t")
+                  (list #t journal date)
+                  (list #f journal date))))
+(provide bool)
+
+;;;;;;;;;;;;;;;
+;; int funcs ;;
+;;;;;;;;;;;;;;;
+
+(define-macro (int ARG)
+  #' (lambda (journal date)
+       (list ARG journal date)))
+(provide int)
+
+;;;;;;;;;;;;;;;;
+;; date funcs ;;
+;;;;;;;;;;;;;;;;
+
+(define-macro (date ARGS ...)
+  #' (lambda (journal date)
+       (define args (list ARGS ...))
+       (if (= (length args) 1)
+           (list date journal date)
+           (list (car (cdr args)) journal date))))
+(provide date)
+
+;;;;;;;;;;;;;;;;;
+;; bool funcs ;;
+;;;;;;;;;;;;;;;;;
+
+(define-macro (bool-func ARG)
+  #' (lambda (journal date)
+       (if (equal? ARG "<")
+           (list < journal date)
+           (if (equal? ARG ">")
+               (list > journal date)
+               (if (equal? ARG "<=")
+                   (list <= journal date)
+                   (if (equal? ARG ">=")
+                       (list >= journal date)
+                       (list equal? journal date)))))))
+(provide bool-func)
+
+(define-macro (get-date-func ARG)
+  #' (lambda (journal date)
+       (if (equal? ARG "<")
+           (list date<? journal date)
+           (if (equal? ARG ">")
+               (list date>? journal date)
+               (if (equal? ARG "<=")
+                   (list date<=? journal date)
+                   (if (equal? ARG ">=")
+                       (list date>=? journal date)
+                       (list date=? journal date)))))))
+(provide bool-func)
