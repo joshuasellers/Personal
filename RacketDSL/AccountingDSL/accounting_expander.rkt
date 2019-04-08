@@ -291,7 +291,6 @@
        (define contents (list ACLINES ...))
        (define args (list journal date))
        (while condition
-              (displayln condition)
               (set! condition (if (equal? (length cond) 1)
                                   (set! cond (car (apply (car cond) args)))
                                   (if (date? (car (apply (car (list-tail cond 1)) args)))

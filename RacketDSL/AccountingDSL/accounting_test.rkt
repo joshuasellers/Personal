@@ -31,6 +31,8 @@ show
 
 show
 
-/> len 1/ clear 1 ?
+show date
+
+/> len 1/ clear 1 show?
 
 show
