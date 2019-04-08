@@ -2,9 +2,11 @@
 
 ###### Description:
 For this project, I created a Domain-Specific Language (DSL) for the first two steps in the Accounting Cycle.  I used the language Racket for the project.  The domain was specified to be anything contained within those first two steps in the cycle:
+
 - Journals Entries
 - Ledger accounts
 - All of the information needed to make the structures
+
 The goal of the project was to make a basic language that accountants could use to make their initial journal of entries (all of the information that is used in the later steps of the accounting process).  Then, commands could be utilized to turn that journal into things like the ledger and other data structures used further on in the cycle.
 
 ### Installing
