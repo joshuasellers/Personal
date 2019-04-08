@@ -7,6 +7,17 @@ var warned = false;
 var limit = -1;
 
 
+ chrome.runtime.onInstalled.addListener(function() {
+    chrome.alarms.create(name="timer", {when: Date.now() + 1000.0, periodInMinutes:0.1});
+  });
+
+chrome.alarms.onAlarm.addListener(function(){
+        updateTime();
+        updateLimit();
+        checkLimit();
+ });
+
+
 chrome.tabs.onActivated.addListener(
 	function (activeINFO)
 	{
@@ -75,6 +86,10 @@ function updateTime(){
 	else{
 		return FormatTime(curr_time);
 	}
+}
+
+function updateLimit(){
+	return FormatTime(limit);
 }
 
 function checkLimit(){

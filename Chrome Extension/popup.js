@@ -22,6 +22,12 @@ var myVar = setInterval(myTimer, 1000);
 
 function myTimer() {
 	var bgPage = chrome.extension.getBackgroundPage();
-	document.getElementById("clock").textContent = bgPage.updateTime();
 	var time = bgPage.updateTime();
+	document.getElementById("clock").textContent = "TIME: " + time;
+	if (chrome.extension.getBackgroundPage().limit == -1){
+		document.getElementById("limit").textContent = "LIMIT: " + "N/A"
+	}
+	else{
+		document.getElementById("limit").textContent = "LIMIT: " + bgPage.updateLimit();
+	}
 }
