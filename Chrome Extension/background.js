@@ -6,16 +6,13 @@ var curr_date = 0;
 var warned = false;
 var limit = -1;
 
+function timers(){
+    updateTime();
+    updateLimit();
+    checkLimit();
+ }
 
- chrome.runtime.onInstalled.addListener(function() {
-    chrome.alarms.create(name="timer", {when: Date.now() + 1000.0, periodInMinutes:0.1});
-  });
-
-chrome.alarms.onAlarm.addListener(function(){
-        updateTime();
-        updateLimit();
-        checkLimit();
- });
+var myVar = setInterval(timers, 1000);
 
 
 chrome.tabs.onActivated.addListener(
