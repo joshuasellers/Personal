@@ -12,7 +12,7 @@ function timers(){
     checkLimit();
  }
 
-var myVar = setInterval(timers, 60000);
+var myVar = setInterval(timers, 30000);
 
 
 chrome.tabs.onActivated.addListener(
