@@ -5,6 +5,7 @@ var curr_time = 0;
 var curr_date = 0;
 var warned = false;
 var limit = -1;
+var blacklisted = "youtube.com"
 
 function timers(){
     updateTime();
@@ -24,7 +25,7 @@ chrome.tabs.onActivated.addListener(
 		chrome.tabs.get(tabID, function (tab)
 			{
 				var url = tab.url;
-				if (url != null && url.includes("youtube.com")) {
+				if (url != null && url.includes(blacklisted)) {
 					if (inYouTube){
 						curr_time += new Date() - curr_date;
 					}
@@ -52,7 +53,7 @@ chrome.tabs.onUpdated.addListener(
 			var tabID = tabId;
 			var url = tab.url;
 			checkLimit();
-			if (url != null && url.includes("youtube.com")) {
+			if (url != null && url.includes(blacklisted)) {
 					if (inYouTube){
 						curr_time += new Date() - curr_date;
 					}
@@ -92,7 +93,7 @@ function updateLimit(){
 function checkLimit(){
 	if (!warned && limit >= 0){
 		if(curr_time >= limit){
-			window.alert("YouTube usage time limit reached!!!");
+			window.alert(blacklisted + " usage time limit reached!!!");
 			warned = true;
 		}
 	}

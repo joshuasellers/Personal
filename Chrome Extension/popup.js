@@ -18,12 +18,20 @@ setTime.onclick = function() {
 	chrome.extension.getBackgroundPage().limit = 3600000 * hours + 60000 * minutes;
 }
 
+let setSite = document.getElementById('setSite');
+
+setSite.onclick = function() {
+	var site = document.getElementById('blacklist').value;
+	chrome.extension.getBackgroundPage().blacklisted = site + ".com";
+}
+
 var myVar = setInterval(myTimer, 1000);
 
 function myTimer() {
 	var bgPage = chrome.extension.getBackgroundPage();
 	var time = bgPage.updateTime();
 	document.getElementById("clock").textContent = "TIME: " + time;
+	document.getElementById("st").textContent = "SITE: " + chrome.extension.getBackgroundPage().blacklisted;
 	if (chrome.extension.getBackgroundPage().limit == -1){
 		document.getElementById("limit").textContent = "LIMIT: " + "N/A"
 	}
