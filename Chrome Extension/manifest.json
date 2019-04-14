@@ -1,7 +1,7 @@
   {
-    "name": "YouTube Use Tracker",
-    "version": "1.0",
-    "description": "Tracks time spent on YouTube to improve productivity.",
+    "name": "Website Use Tracker",
+    "version": "2.718",
+    "description": "Tracks time spent on webistes to improve productivity.",
     "background": {
       "scripts": ["format.js", "background.js"],
       "persistent": true
