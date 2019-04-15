@@ -9,10 +9,21 @@ module Types where
 
 -- SIGNALS
 
-data Bit = 0 | 1 
-  deriving (Show, Read, Eq, Bounded, Enum)
+data Bit = Bit Int 
+  deriving (Show)
 
-data Byte = [Bit, Bit, Bit, Bit, Bit, Bit, Bit, Bit]
-  deriving (Show, Read, Eq, Bounded, Enum)
+bit :: Int -> Bit
+bit n 
+  | n == 0 || n == 1 = Bit n
+  | otherwise = error "invalid value"
+
+data Byte = Byte [Bit]
+  deriving (Show)
+
+byte :: [Bit] -> Byte
+byte xs 
+  | (length xs) == 8 = Byte xs
+  | otherwise = error "invalid value" 
+
 
 
