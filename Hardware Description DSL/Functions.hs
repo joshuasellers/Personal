@@ -22,27 +22,31 @@ import GHC.Arr
 
 import Types
 
+-- MISC FUNCS
+
+powerset :: [a] -> [[a]]
+powerset [] = [[]]
+powerset (x:xs) = xss ++ map (x:) xss
+                 where xss = powerset xs
+
 --BASIC GATES
 
-and_gate :: Bit -> Bit -> Bit
-Bit a `and_gate` Bit b 
-  | a /= b = Bit 0
-  | a == b && a == 1 = Bit 1
-  | otherwise = Bit 0
+and_gate :: [Bit] -> Bit
+and_gate [] = error "invalid value"
+and_gate bs = foldr (\ (Bit x) b -> if (x == 0) then (Bit 0) else b) (Bit 1) bs
 
-or_gate :: Bit -> Bit -> Bit
-Bit a `or_gate` Bit b 
-  | a == 1 || b == 1 = Bit 1
-  | otherwise = Bit 0
+or_gate :: [Bit] -> Bit
+or_gate [] = error "invalid value"
+or_gate bs = foldr (\ (Bit x) b -> if (x == 1) then (Bit 1) else b) (Bit 0) bs
 
-xor_gate :: Bit -> Bit -> Bit
+xor_gate :: [Bit] -> Bit
 Bit a `xor_gate` Bit b 
   | a == 1 && b == 0 = Bit 1
   | a == 0 && b == 1 = Bit 1
   | otherwise = Bit 0
 
 not_gate :: Bit -> Bit
-not_gate Bit a
+not_gate (Bit a)
   | a == 1 = Bit 0
   | otherwise = Bit 1
 
@@ -78,7 +82,8 @@ d0 = (not i1i0)
 -}
 n_to_2n_decoder :: [Bit] -> [Bit]
 n_to_2n_decoder [] = []
-n_to_2n_decoder bs = 
+n_to_2n_decoder bs = []
+
 
 
 {-
