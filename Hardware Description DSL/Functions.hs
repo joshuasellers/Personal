@@ -63,6 +63,23 @@ Bit a `xnor_gate` Bit b
   | a == 0 && b == 1 = Bit 0
   | otherwise = Bit 1
 
+-- DECODER
+{-
+i1 i0 d3 d2 d1 d0
+0  0  0  0  0  1
+0  1  0  0  1  0
+1  0  0  1  0  0
+1  1  1  0  0  0
+
+d3 = i1i0
+d2 = i1 (not i0)
+d1 = (not i1) i0
+d0 = (not i1i0)
+-}
+n_to_2n_decoder :: [Bit] -> [Bit]
+n_to_2n_decoder [] = []
+n_to_2n_decoder bs = 
+
 
 {-
 class Drawing c where
