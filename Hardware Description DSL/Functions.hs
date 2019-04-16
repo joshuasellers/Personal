@@ -18,6 +18,7 @@ import Control.Monad.ST
 import Data.STRef
 import System.Random
 import GHC.Arr
+import Data.Function
 
 
 import Types
@@ -28,6 +29,15 @@ powerset :: [a] -> [[a]]
 powerset [] = [[]]
 powerset (x:xs) = xss ++ map (x:) xss
                  where xss = powerset xs
+
+powersort :: [a] -> [[a]]
+powersort xs = sortBy (compare `on` length) (powerset xs)
+
+replaceNth :: Int -> a -> [a] -> [a]
+replaceNth _ _ [] = []
+replaceNth n newVal (x:xs)
+        | n == 0 = newVal:xs
+        | otherwise = x:replaceNth (n-1) newVal xs
 
 --BASIC GATES
 
@@ -60,20 +70,32 @@ xnor_gate bs = not_gate (xor_gate bs)
 
 -- DECODER
 {-
-i1 i0 d3 d2 d1 d0
-0  0  0  0  0  1
-0  1  0  0  1  0
-1  0  0  1  0  0
+i1 i0 d0 d1 d2 d3
 1  1  1  0  0  0
+1  0  0  1  0  0
+0  1  0  0  1  0
+0  0  0  0  0  1
 
-d3 = i1i0
-d2 = i1 (not i0)
-d1 = (not i1) i0
-d0 = (not i1i0)
+
+
+d0 = i1i0
+d1 = i1 (not i0)
+d2 = (not i1) i0
+d3 = (not i1i0)
 -}
 n_to_2n_decoder :: [Bit] -> [Bit]
-n_to_2n_decoder [] = []
-n_to_2n_decoder bs = []
+n_to_2n_decoder [] = error "n_to_2n_decoder invalid input"
+n_to_2n_decoder bs = decoder_helper bs negs
+        where xs = unfoldr (\ b -> if (b == (length bs)) then Nothing else Just (b,b+1)) 0
+              negs = powersort xs
+
+decoder_helper :: [Bit] -> [[Int]] -> [Bit]
+decoder_helper [] _ = error "decoder_helper invalid input"
+decoder_helper _ [] = []
+decoder_helper bs (n:negs) = neg bs n : decoder_helper bs negs
+    where neg [] _ = error "neg invalid input"
+          neg bits [] = and_gate bits
+          neg bits (i:ns) = neg (replaceNth i (not_gate (bits!!i)) bits) ns
 
 
 
