@@ -32,40 +32,31 @@ powerset (x:xs) = xss ++ map (x:) xss
 --BASIC GATES
 
 and_gate :: [Bit] -> Bit
-and_gate [] = error "invalid value"
+and_gate [] = error "and invalid value"
 and_gate bs = foldr (\ (Bit x) b -> if (x == 0) then (Bit 0) else b) (Bit 1) bs
 
 or_gate :: [Bit] -> Bit
-or_gate [] = error "invalid value"
+or_gate [] = error "or invalid value"
 or_gate bs = foldr (\ (Bit x) b -> if (x == 1) then (Bit 1) else b) (Bit 0) bs
 
 xor_gate :: [Bit] -> Bit
-Bit a `xor_gate` Bit b 
-  | a == 1 && b == 0 = Bit 1
-  | a == 0 && b == 1 = Bit 1
-  | otherwise = Bit 0
+xor_gate [] = error "xor invalid value"
+xor_gate bs = if ((count :: Integer) == 1) then Bit 1 else Bit 0
+    where count = foldr (\ (Bit x) b -> if (x == 1) then (b+1) else b) (0) bs
 
 not_gate :: Bit -> Bit
 not_gate (Bit a)
   | a == 1 = Bit 0
   | otherwise = Bit 1
 
-nand_gate :: Bit -> Bit -> Bit
-Bit a `nand_gate` Bit b 
-  | a /= b = Bit 1
-  | a == b && a == 1 = Bit 0
-  | otherwise = Bit 1
+nand_gate :: [Bit] -> Bit
+nand_gate bs = not_gate (and_gate bs)
 
-nor_gate :: Bit -> Bit -> Bit
-Bit a `nor_gate` Bit b 
-  | a == 1 || b == 1 = Bit 0
-  | otherwise = Bit 1
+nor_gate :: [Bit] -> Bit
+nor_gate bs = not_gate (or_gate bs)
 
-xnor_gate :: Bit -> Bit -> Bit
-Bit a `xnor_gate` Bit b 
-  | a == 1 && b == 0 = Bit 0
-  | a == 0 && b == 1 = Bit 0
-  | otherwise = Bit 1
+xnor_gate :: [Bit] -> Bit
+xnor_gate bs = not_gate (xor_gate bs)
 
 -- DECODER
 {-
