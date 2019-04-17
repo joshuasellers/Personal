@@ -39,6 +39,9 @@ replaceNth n newVal (x:xs)
         | n == 0 = newVal:xs
         | otherwise = x:replaceNth (n-1) newVal xs
 
+bitVal :: Bit -> Int
+bitVal (Bit b) = b
+
 --BASIC GATES
 
 and_gate :: [Bit] -> Bit
@@ -83,10 +86,11 @@ d1 = i1 (not i0)
 d2 = (not i1) i0
 d3 = (not i1i0)
 -}
-n_to_2n_decoder :: [Bit] -> [Bit]
-n_to_2n_decoder [] = error "n_to_2n_decoder invalid input"
-n_to_2n_decoder bs = decoder_helper bs negs
-        where xs = unfoldr (\ b -> if (b == (length bs)) then Nothing else Just (b,b+1)) 0
+n_to_2n_decoder :: Bit -> [Bit] -> [Bit]
+n_to_2n_decoder _ [] = error "n_to_2n_decoder invalid input"
+n_to_2n_decoder e bs = o
+        where o = map (\ x -> if ((bitVal e)==0) then e else x) (decoder_helper bs negs)
+              xs = unfoldr (\ b -> if (b == (length bs)) then Nothing else Just (b,b+1)) 0
               negs = powersort xs
 
 decoder_helper :: [Bit] -> [[Int]] -> [Bit]
