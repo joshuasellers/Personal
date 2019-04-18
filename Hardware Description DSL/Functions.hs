@@ -128,9 +128,25 @@ multiplexer cs is = if ((2^(length cs)) /= (length is))
                               combo (y:ys) (x:xs) = (and_gate [y, x]) : (combo ys xs)
 
 -- PROGRAMABLE LOGIC ARRAY (PLA)
+{-
+This is a tough one.  The only good way i see to set the programmable output
+is to use (!!) and have the user specify which bits to pick.  
+Index at 0. Factor in the not after each bit in the array
 
-pla :: [Bit] -> [int] -> [Bit]
+EX.
+pla [Bit 0, Bit 1, Bit 0]  [[[0,1],[0,2][1,3]],[[1,3],[0,3][2,3]]]
 
+-}
+pla :: [Bit] -> [[[int]]] -> [Bit]
+pla [] _ = error "pla invalid input"
+pla _ [] = []
+pla bs (f:fs) = (pla_helper o f) : (pla bs fs)
+  where o = foldr (\ x b -> x:(not_gate [x]):b) [] bs
+
+pla_helper [Bit] -> [[Int]] -> Bit
+pla_helper [] _ = error "pla_helper invalid input"
+pla_helper _ [] = []
+pla_helper bs fs = 
 
 
 {-
