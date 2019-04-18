@@ -136,6 +136,11 @@ Index at 0. Factor in the not after each bit in the array
 EX.
 pla [Bit 0, Bit 1, Bit 0]  [[[0,1],[0,2],[1,3]],[[1,3],[0,3],[2,3]]]
 
+Helpful link:
+https://techdifferences.com/difference-between-pla-and-pal.html
+
+I decided to not do PAL too since its has the same functionality of PLA,
+but is more rigid. With hardware, that is a useful distinction, but shouldn't matter here.
 -}
 pla :: [Bit] -> [[[Int]]] -> [Bit]
 pla [] _ = error "pla invalid input"
