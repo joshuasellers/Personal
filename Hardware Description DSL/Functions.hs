@@ -110,6 +110,24 @@ decoder_helper bs (n:negs) = neg bs n : decoder_helper bs negs
 
 -- MULTIPLEXER
 
+{-
+See image for description: http://www.dcs.gla.ac.uk/~simon/teaching/CS1Q-students/systems/online/sec7.html
+-}
+
+multiplexer :: [Bit] -> [Bit] -> Bit
+multiplexer [] _ = error "multiplexer invalid input"
+multiplexer _ [] = error "multiplexer invalid input"
+multiplexer cs is = if ((2^(length cs)) /= (length is)) 
+                      then error "multiplexer invalid input"
+                      else or_gate o
+                        where o = combo is d
+                              d = (n_to_2n_decoder cs)
+                              combo [] [] = []
+                              combo [] _ = error "invalid combo input"
+                              combo _ [] = error "invalid combo input"
+                              combo (y:ys) (x:xs) = (and_gate [y, x]) : (combo ys xs)
+
+
 
 
 {-
