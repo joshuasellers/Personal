@@ -73,12 +73,12 @@ xnor_gate bs = not_gate (xor_gate bs)
 
 -- DECODER
 {-
-i1 i0 d0 d1 d2 d3
-1  1  1  0  0  0
-1  0  0  1  0  0
-0  1  0  0  1  0
-0  0  0  0  0  1
-
+e i1 i0 d0 d1 d2 d3
+1  1  1  1  0  0  0
+1  1  0  0  1  0  0
+1  0  1  0  0  1  0
+1  0  0  0  0  0  1
+0  x  x  x  x  x  x  
 
 
 d0 = i1i0
@@ -86,9 +86,16 @@ d1 = i1 (not i0)
 d2 = (not i1) i0
 d3 = (not i1i0)
 -}
-n_to_2n_decoder :: Bit -> [Bit] -> [Bit]
-n_to_2n_decoder _ [] = error "n_to_2n_decoder invalid input"
-n_to_2n_decoder e bs = o
+n_to_2n_decoder :: [Bit] -> [Bit]
+n_to_2n_decoder [] = error "n_to_2n_decoder invalid input"
+n_to_2n_decoder bs = o
+        where o = decoder_helper bs negs
+              xs = unfoldr (\ b -> if (b == (length bs)) then Nothing else Just (b,b+1)) 0
+              negs = powersort xs
+
+n_to_2n_decoder_enable :: Bit -> [Bit] -> [Bit]
+n_to_2n_decoder_enable _ [] = error "n_to_2n_decoder invalid input"
+n_to_2n_decoder_enable e bs = o
         where o = map (\ x -> if ((bitVal e)==0) then e else x) (decoder_helper bs negs)
               xs = unfoldr (\ b -> if (b == (length bs)) then Nothing else Just (b,b+1)) 0
               negs = powersort xs
@@ -100,6 +107,8 @@ decoder_helper bs (n:negs) = neg bs n : decoder_helper bs negs
     where neg [] _ = error "neg invalid input"
           neg bits [] = and_gate bits
           neg bits (i:ns) = neg (replaceNth i (not_gate (bits!!i)) bits) ns
+
+-- MULTIPLEXER
 
 
 
