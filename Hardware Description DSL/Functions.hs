@@ -127,6 +127,9 @@ multiplexer cs is = if ((2^(length cs)) /= (length is))
                               combo _ [] = error "invalid combo input"
                               combo (y:ys) (x:xs) = (and_gate [y, x]) : (combo ys xs)
 
+-- PROGRAMABLE LOGIC ARRAY (PLA)
+
+pla :: [Bit] -> [int] -> [Bit]
 
 
 
