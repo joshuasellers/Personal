@@ -1,6 +1,7 @@
 {-
 Name: Josh Sellers
-File Description: Types
+File Description: I separated out Bits and Bytes in case I wound up making a bunch 
+more signal types (this feels separate from the hardware itself).
 -}
 
 {-# OPTIONS -Wall -Wno-unused-imports #-}

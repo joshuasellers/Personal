@@ -1,6 +1,7 @@
 {-
 Name: Josh Sellers
-File Description: Functions
+File Description: Functions that represent low-level hardware.  Intended to be used
+as a learning tool for students or anyone that wants to understand hardware better.
 -}
 
 {-# LANGUAGE FlexibleInstances #-}
@@ -85,6 +86,7 @@ d0 = i1i0
 d1 = i1 (not i0)
 d2 = (not i1) i0
 d3 = (not i1i0)
+e = encoder option
 -}
 n_to_2n_decoder :: [Bit] -> [Bit]
 n_to_2n_decoder [] = error "n_to_2n_decoder invalid input"
@@ -127,20 +129,22 @@ multiplexer cs is = if ((2^(length cs)) /= (length is))
                               combo _ [] = error "invalid combo input"
                               combo (y:ys) (x:xs) = (and_gate [y, x]) : (combo ys xs)
 
--- PROGRAMABLE LOGIC ARRAY (PLA)
+-- PROGRAMABLE LOGIC DEVICE (PLD)
 {-
 This is a tough one.  The only good way i see to set the programmable output
 is to use (!!) and have the user specify which bits to pick.  
 Index at 0. Factor in the not after each bit in the array
 
 EX.
-pla [Bit 0, Bit 1, Bit 0]  [[[0,1],[0,2],[1,3]],[[1,3],[0,3],[2,3]]]
+pld [Bit 0, Bit 1, Bit 0]  [[[0,1],[0,2],[1,3]],[[1,3],[0,3],[2,3]]]
 
 Helpful link:
 https://techdifferences.com/difference-between-pla-and-pal.html
 
 I decided to not do PAL too since its has the same functionality of PLA,
 but is more rigid. With hardware, that is a useful distinction, but shouldn't matter here.
+
+I'm also doing ROM separately, since it has a decoder inside (unlike the other two).
 -}
 pld :: [Bit] -> [[[Int]]] -> [Bit]
 pld [] _ = error "pla invalid input"
@@ -156,23 +160,15 @@ pld_helper bs fs = or_gate ands
         sub [] = error "sub invalid input"
         sub ns = foldr (\ x b -> (bs!!x):b) [] ns
 
-
+-- READ ONLY MEMORY (ROM)
 {-
-class Drawing c where
-   draw :: Dealer -> c -> ([Card], Dealer)
-instance Drawing Int where
-    draw dealer 0 = ([],dealer)
-    draw dealer n = ((take n deck), d)
-        where deck = _deck dealer
-              d = dealer {_deck = (drop n deck)}
-instance Drawing Card where
-    draw dealer c = (card, d)
-        where out = removeCard (_deck dealer) c 
-              d = dealer {_deck = (snd out)}
-              card = fst out
-instance Drawing [Card] where
-    draw dealer cards = (cs, d)
-        where out = drawSpecificCards (_deck dealer) cards
-              cs = fst out
-              d = dealer {_deck = (snd out)}
+https://www.geeksforgeeks.org/read-memory-rom-classification-programming/
+
+ROM is basicall a programmable device that has a decoder and a bunch or OR-gates for the output.
+A ROM is programmed once, but I don't see a good way to gaurantee that in a functional language
+like Haskell, so it is up to the coder to understand that nuance.
 -}
+
+rom :: [Bit] -> [Bit]
+rom [] = error "rom invalid input"
+rom bs = []
