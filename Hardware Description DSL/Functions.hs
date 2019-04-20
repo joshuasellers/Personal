@@ -142,16 +142,16 @@ https://techdifferences.com/difference-between-pla-and-pal.html
 I decided to not do PAL too since its has the same functionality of PLA,
 but is more rigid. With hardware, that is a useful distinction, but shouldn't matter here.
 -}
-pla :: [Bit] -> [[[Int]]] -> [Bit]
-pla [] _ = error "pla invalid input"
-pla _ [] = []
-pla bs (f:fs) = (pla_helper o f) : (pla bs fs)
+pld :: [Bit] -> [[[Int]]] -> [Bit]
+pld [] _ = error "pla invalid input"
+pld _ [] = []
+pld bs (f:fs) = (pld_helper o f) : (pld bs fs)
   where o = foldr (\ x b -> x:(not_gate x):b) [] bs
 
-pla_helper :: [Bit] -> [[Int]] -> Bit
-pla_helper [] _ = error "pla_helper invalid input"
-pla_helper _ [] = error "pla_helper invalid input"
-pla_helper bs fs = or_gate ands
+pld_helper :: [Bit] -> [[Int]] -> Bit
+pld_helper [] _ = error "pla_helper invalid input"
+pld_helper _ [] = error "pla_helper invalid input"
+pld_helper bs fs = or_gate ands
   where ands = foldr (\ x b -> (and_gate (sub x)):b) [] fs
         sub [] = error "sub invalid input"
         sub ns = foldr (\ x b -> (bs!!x):b) [] ns
