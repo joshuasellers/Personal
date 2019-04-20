@@ -164,11 +164,18 @@ pld_helper bs fs = or_gate ands
 {-
 https://www.geeksforgeeks.org/read-memory-rom-classification-programming/
 
+Same issue as before with (!!).
+
 ROM is basicall a programmable device that has a decoder and a bunch or OR-gates for the output.
 A ROM is programmed once, but I don't see a good way to gaurantee that in a functional language
 like Haskell, so it is up to the coder to understand that nuance.
 -}
 
-rom :: [Bit] -> [Bit]
-rom [] = error "rom invalid input"
-rom bs = []
+rom :: [Bit] -> [[Int]] -> [Bit]
+rom [] _ = error "rom invalid input"
+rom _ [] = [error "rom invalid input"]
+rom bs is = foldr (\x b -> (or_gate (sub x)) : b) [] is
+  where d = n_to_2n_decoder bs
+        sub [] = error "sub invalid input"
+        sub ns = foldr (\ x b -> (d!!x):b) [] ns
+
