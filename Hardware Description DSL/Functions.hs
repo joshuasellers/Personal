@@ -184,11 +184,24 @@ rom bs is = foldr (\x b -> (or_gate (sub x)) : b) [] is
 https://en.wikibooks.org/wiki/Digital_Circuits/Latches
 https://www.allaboutcircuits.com/textbook/digital/chpt-10/s-r-latch/
 
-this is asynchronous, so the user will have to store the output somehow
+this is asynchronous, so the user will have to store the output 
+and propogate it back through the next time the latch is used.
 
-to set up "race condition" i will always have R go first
+It is reccomended that the user remeber that q and nq should be opposite for
+the initial formation of the latch.  This code is not set up for race conditions.
 -}
 
-sr_latch :: Bit -> Bit -> (Bit, Bit)
-sr_latch s r = 
+sr_latch :: (Bit, Bit) -> Bit -> Bit -> (Bit, Bit)
+sr_latch (q, nq) s r = if (((bitVal s) == 1) && ((bitVal r) == 1))
+                        then error "invalid sr_latch input"
+                        else ((nor_gate [nq,r]),(nor_gate [q,s]))
+
+-- added enable (keeps output latched to previous data)
+
+gated_sr_latch :: (Bit, Bit) -> Bit -> Bit -> Bit -> (Bit, Bit)
+gated_sr_latch (q, nq) e s r = if (bitVal e) == 0 
+                                 then (q,nq)
+                                 else (if (((bitVal s) == 1) && ((bitVal r) == 1))
+                                        then error "invalid sr_latch input"
+                                        else ((nor_gate [nq,r]),(nor_gate [q,s])))
 
