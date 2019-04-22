@@ -179,7 +179,7 @@ rom bs is = foldr (\x b -> (or_gate (sub x)) : b) [] is
         sub [] = error "sub invalid input"
         sub ns = foldr (\ x b -> (d!!x):b) [] ns
 
--- SR LATCH
+-- LATCHES
 {-
 https://en.wikibooks.org/wiki/Digital_Circuits/Latches
 https://www.allaboutcircuits.com/textbook/digital/chpt-10/s-r-latch/
@@ -190,6 +190,8 @@ and propogate it back through the next time the latch is used.
 It is reccomended that the user remeber that q and nq should be opposite for
 the initial formation of the latch.  This code is not set up for race conditions.
 -}
+
+-- set/reset latch
 
 sr_latch :: (Bit, Bit) -> Bit -> Bit -> (Bit, Bit)
 sr_latch (q, nq) s r = if (((bitVal s) == 1) && ((bitVal r) == 1))
@@ -205,3 +207,11 @@ gated_sr_latch (q, nq) e s r = if (bitVal e) == 0
                                         then error "invalid sr_latch input"
                                         else ((nor_gate [nq,r]),(nor_gate [q,s])))
 
+-- data latch (transparent)
+
+d_latch :: (Bit, Bit) -> Bit -> Bit -> (Bit, Bit)
+d_latch (q, nq) e d =  if (bitVal e) == 0 
+                        then (q,nq) 
+                        else ((nor_gate [nq,end]),(nor_gate [q,ed]))
+                            where ed = and_gate [e,d]
+                                  end = and_gate[e,(not_gate d)]
