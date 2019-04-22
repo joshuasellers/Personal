@@ -183,6 +183,7 @@ rom bs is = foldr (\x b -> (or_gate (sub x)) : b) [] is
 {-
 https://en.wikibooks.org/wiki/Digital_Circuits/Latches
 https://www.allaboutcircuits.com/textbook/digital/chpt-10/s-r-latch/
+https://electronics.stackexchange.com/questions/61530/how-to-understand-the-sr-latch
 
 this is asynchronous, so the user will have to store the output 
 and propogate it back through the next time the latch is used.
@@ -215,3 +216,9 @@ d_latch (q, nq) e d =  if (bitVal e) == 0
                         else ((nor_gate [nq,end]),(nor_gate [q,ed]))
                             where ed = and_gate [e,d]
                                   end = and_gate[e,(not_gate d)]
+
+-- FLIP-FLOPS
+{-
+Since I am not coding in time-related events in this version of my project,
+I will not have Flip-Flops.  But they will be on my list for future interations.
+-}
