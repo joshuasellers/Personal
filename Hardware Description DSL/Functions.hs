@@ -222,3 +222,8 @@ d_latch (q, nq) e d =  if (bitVal e) == 0
 Since I am not coding in time-related events in this version of my project,
 I will not have Flip-Flops.  But they will be on my list for future interations.
 -}
+
+-- DELAY
+{-
+This would be needed for future versions of this project
+-}
