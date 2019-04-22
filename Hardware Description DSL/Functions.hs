@@ -179,3 +179,16 @@ rom bs is = foldr (\x b -> (or_gate (sub x)) : b) [] is
         sub [] = error "sub invalid input"
         sub ns = foldr (\ x b -> (d!!x):b) [] ns
 
+-- SR LATCH
+{-
+https://en.wikibooks.org/wiki/Digital_Circuits/Latches
+https://www.allaboutcircuits.com/textbook/digital/chpt-10/s-r-latch/
+
+this is asynchronous, so the user will have to store the output somehow
+
+to set up "race condition" i will always have R go first
+-}
+
+sr_latch :: Bit -> Bit -> (Bit, Bit)
+sr_latch s r = 
+
