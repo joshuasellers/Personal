@@ -7,5 +7,5 @@ File Description: Example
 
 module Example where
 
-import Types
-import Functions
+import Inputs
+import Hardware

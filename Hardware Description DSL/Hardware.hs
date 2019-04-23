@@ -22,7 +22,7 @@ import GHC.Arr
 import Data.Function
 
 
-import Types
+import Inputs
 
 -- MISC FUNCS
 
