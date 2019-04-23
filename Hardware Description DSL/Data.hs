@@ -26,11 +26,11 @@ byte xs
   | (length xs) == 8 = Byte xs
   | otherwise = error "byte invalid value" 
 
-data Register = Register [Bit] Bit 
+data Register = Register [Bit]
 
-register :: [Bit] -> Bit -> Register
-register xs b
-   | (length xs) == 32 = Register xs b
+register :: [Bit] -> Register
+register xs
+   | (length xs) == 32 = Register xs
    | otherwise = error "register invalid value"
 
 data Registers = Registers [Register]

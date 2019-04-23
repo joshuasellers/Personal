@@ -234,12 +234,36 @@ http://web.cse.ohio-state.edu/~teodorescu.1/download/teaching/cse675.au08/Cse675
 http://www.cs.uwm.edu/classes/cs315/Bacon/Lecture/HTML/ch05s03.html
 -}
 
-register_file :: Bit -> [Bit] -> [Bit] -> [Bit] -> [Bit] -> Registers -> ([Bit], [Bit])
+reg_out :: Registers -> [Bit] -> Registers
+reg_out _ [] = error "reg_out invalid input"
+reg_out [] _ = error "reg_out invalid input" 
+reg_out [] [] = []
+reg_out (r:reg) (w:w_dec) = if (bitVal w) == 0
+                               then r : (reg_out reg w_dec)
+                               else (register wd) : (reg_out reg w_dec)
+
+read_out :: [Bit] -> Registers -> [Bit]
+read_out _ [] = error "read_out invalid input"
+read_out [] _ = error "read_out invalid input"
+read_out ra rego =
+
+
+register_file :: Bit -> [Bit] -> [Bit] -> [Bit] -> [Bit] -> Registers -> (Registers, ([Bit], [Bit]))
 register_file w ra1 ra2 wa wd regs
      | (((length ra1) == 5) && ((length ra2) == 5) && ((length wa) == 5) &&
-       ((length wd) == 32) && ((length regs) == 32)) = 
+       ((length wd) == 32) && ((length regs) == 32)) = (ro, ())
      | otherwise = error "register_file invalid input"
-    where w_decoder = n_to_2n_decoder_enable w wa 
+    where w_decoder = n_to_2n_decoder_enable w wa
+          ro = reg_out regs w_decoder
+          r1out = read_out ra1 ro
+          r2out = read_out ra2 ro
+
+
+
+
+
+
+
           
 
 
