@@ -8,4 +8,4 @@ File Description: Example
 module Example where
 
 import Inputs
-import Hardware
+import Data

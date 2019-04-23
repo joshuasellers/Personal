@@ -6,7 +6,7 @@ more signal types (this feels separate from the hardware itself).
 
 {-# OPTIONS -Wall -Wno-unused-imports #-}
 
-module Types where
+module Data where
 
 -- SIGNALS
 
@@ -33,12 +33,12 @@ register xs b
    | (length xs) == 32 = Register xs b
    | otherwise = error "register invalid value"
 
-data Register_File = Register_File [Register]
+data Registers = Registers [Register]
 
-register_file :: [Register] -> Register_File
-register_file xs
-   | (length xs) == 32 = Register_File xs
-   | otherwise = error "register_file invalid value"
+registers :: [Register] -> Registers
+registers xs
+   | (length xs) == 32 = Registers xs
+   | otherwise = error "registers invalid value"
 
 
 

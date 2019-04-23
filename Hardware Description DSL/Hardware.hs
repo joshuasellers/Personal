@@ -22,7 +22,7 @@ import GHC.Arr
 import Data.Function
 
 
-import Inputs
+import Data
 
 -- MISC FUNCS
 
@@ -227,3 +227,19 @@ I will not have Flip-Flops.  But they will be on my list for future interations.
 {-
 This would be needed for future versions of this project
 -}
+
+-- REGISTER FILE
+{-
+http://web.cse.ohio-state.edu/~teodorescu.1/download/teaching/cse675.au08/Cse675.02.E.MemoryDesign_part1.pdf
+http://www.cs.uwm.edu/classes/cs315/Bacon/Lecture/HTML/ch05s03.html
+-}
+
+register_file :: Bit -> [Bit] -> [Bit] -> [Bit] -> [Bit] -> Registers -> ([Bit], [Bit])
+register_file w ra1 ra2 wa wd regs
+     | (((length ra1) == 5) && ((length ra2) == 5) && ((length wa) == 5) &&
+       ((length wd) == 32) && ((length regs) == 32)) = 
+     | otherwise = error "register_file invalid input"
+    where w_decoder = n_to_2n_decoder_enable w wa 
+          
+
+
