@@ -18,6 +18,9 @@ bit n
   | n == 0 || n == 1 = Bit n
   | otherwise = error "bit invalid value"
 
+bitVal :: Bit -> Int
+bitVal (Bit b) = b
+
 data Byte = Byte [Bit]
   deriving (Show)
 
@@ -40,5 +43,9 @@ registers xs
    | (length xs) == 32 = Registers xs
    | otherwise = error "registers invalid value"
 
+registerVal :: Register -> [Bit]
+registerVal (Register b) = b
 
+registersVal :: Registers -> [Register]
+registersVal (Registers b) = b
 

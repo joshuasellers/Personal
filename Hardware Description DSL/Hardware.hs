@@ -26,6 +26,12 @@ import Data
 
 -- MISC FUNCS
 
+splitEvery :: Int -> [a] -> [[a]]
+splitEvery _ [] = []
+splitEvery n list = first : (splitEvery n rest)
+  where
+    (first,rest) = splitAt n list
+
 powerset :: [a] -> [[a]]
 powerset [] = [[]]
 powerset (x:xs) = xss ++ map (x:) xss
@@ -39,9 +45,6 @@ replaceNth _ _ [] = []
 replaceNth n newVal (x:xs)
         | n == 0 = newVal:xs
         | otherwise = x:replaceNth (n-1) newVal xs
-
-bitVal :: Bit -> Int
-bitVal (Bit b) = b
 
 --BASIC GATES
 
@@ -234,27 +237,35 @@ http://web.cse.ohio-state.edu/~teodorescu.1/download/teaching/cse675.au08/Cse675
 http://www.cs.uwm.edu/classes/cs315/Bacon/Lecture/HTML/ch05s03.html
 -}
 
-reg_out :: Registers -> [Bit] -> Registers
-reg_out _ [] = error "reg_out invalid input"
-reg_out [] _ = error "reg_out invalid input" 
-reg_out [] [] = []
-reg_out (r:reg) (w:w_dec) = if (bitVal w) == 0
-                               then r : (reg_out reg w_dec)
-                               else (register wd) : (reg_out reg w_dec)
+reg_out :: [Register] -> [Bit] -> [Bit] -> [Register]
+reg_out [] [] _ = []
+reg_out _ [] _ = error "reg_out invalid input"
+reg_out [] _ _ = error "reg_out invalid input" 
+reg_out (r:reg) (w:w_dec) wd = if (bitVal w) == 0
+                               then r : (reg_out reg w_dec wd)
+                               else (register wd) : (reg_out reg w_dec wd)
 
 read_out :: [Bit] -> Registers -> [Bit]
-read_out _ [] = error "read_out invalid input"
 read_out [] _ = error "read_out invalid input"
-read_out ra rego =
+read_out ra rego = out
+  where splits = foldr (\ x b -> (splitEvery 1 (registerVal x)):b) [] (registersVal rego)
+        merges = foldr (\ x b -> if (length b) == 0 then x else (combine x b)) [] splits
+        out = foldr (\ x b -> (multiplexer ra x):b) [] merges
+
+combine :: [[Bit]] -> [[Bit]] -> [[Bit]]
+combine [] [] = []
+combine _ [] = error "combine invalid input"
+combine [] _ = error "combine invalid input"
+combine (x:xs) (y:ys) = (x ++ y) : (combine xs ys)
 
 
 register_file :: Bit -> [Bit] -> [Bit] -> [Bit] -> [Bit] -> Registers -> (Registers, ([Bit], [Bit]))
 register_file w ra1 ra2 wa wd regs
      | (((length ra1) == 5) && ((length ra2) == 5) && ((length wa) == 5) &&
-       ((length wd) == 32) && ((length regs) == 32)) = (ro, ())
+       ((length wd) == 32) && ((length (registersVal regs)) == 32)) = (ro, (r1out,r2out))
      | otherwise = error "register_file invalid input"
     where w_decoder = n_to_2n_decoder_enable w wa
-          ro = reg_out regs w_decoder
+          ro = Registers (reg_out (registersVal regs) w_decoder wd)
           r1out = read_out ra1 ro
           r2out = read_out ra2 ro
 
