@@ -7,5 +7,5 @@ File Description: An attempt at making an ALU.
 
 module Example where
 
-import Inputs
+import Hardware
 import Data

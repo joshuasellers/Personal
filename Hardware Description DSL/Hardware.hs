@@ -8,7 +8,7 @@ as a learning tool for students or anyone that wants to understand hardware bett
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# OPTIONS -Wall -Wno-unused-imports #-}
 
-module Functions where
+module Hardware where
 
 import Data.Either
 import Data.List
