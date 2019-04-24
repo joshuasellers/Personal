@@ -299,7 +299,29 @@ reg30 = Register r30
 reg31 :: Register
 reg31 = Register r31
 
+regs :: Registers
+regs = Registers [reg0,reg1,reg2,reg3,reg4,reg5,reg6,reg7, 
+                  reg8,reg9,reg10,reg11,reg12,reg13,reg14,reg15,
+                  reg16,reg17,reg18,reg19,reg20,reg21,reg22,reg23,
+                  reg24,reg25,reg26,reg27,reg28,reg29,reg30,reg31]
 
+wd :: [Bit]
+wd = [Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, 
+      Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, 
+      Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, 
+      Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1]
+
+w :: Bit
+w = Bit 1
+
+wa :: [Bit]
+wa = [Bit 0, Bit 0, Bit 0, Bit 0, Bit 0]
+
+ra1 :: [Bit]
+ra1 = [Bit 0, Bit 0, Bit 0, Bit 0, Bit 0]
+
+ra2 :: [Bit]
+ra2 = [Bit 0, Bit 0, Bit 0, Bit 0, Bit 1]
 
 
 
