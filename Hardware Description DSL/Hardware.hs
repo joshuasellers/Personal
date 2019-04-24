@@ -269,8 +269,20 @@ register_file w ra1 ra2 wa wd regs
           r1out = read_out ra1 ro
           r2out = read_out ra2 ro
 
+-- FULL ADDER
+{-
+https://www.geeksforgeeks.org/full-adder-digital-electronics/
+-}
 
-
+full_adder :: Bit -> Bit -> Bit -> (Bit, Bit)
+full_adder a b c_in = sumB (bitVal a) (bitVal b) (bitVal c_in)
+  where sumB x y z = if (x+y+z) == 3 
+                         then ((Bit 1),(Bit 1))
+                         else (if (x+y+z) == 2 
+                                 then ((Bit 0), Bit 1)
+                                 else (if (x+y+z) ==1
+                                        then ((Bit 1), (Bit 0))
+                                        else ((Bit 0), (Bit 0))))
 
 
 
