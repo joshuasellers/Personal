@@ -1,6 +1,6 @@
 {-
 Name: Josh Sellers
-File Description: Example
+File Description: An attempt at making an ALU.
 -}
 
 {-# OPTIONS -Wall -Wno-unused-imports #-}
