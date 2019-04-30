@@ -323,5 +323,5 @@ ra1 = [Bit 0, Bit 0, Bit 0, Bit 0, Bit 0]
 ra2 :: [Bit]
 ra2 = [Bit 0, Bit 0, Bit 0, Bit 0, Bit 1]
 
-
-
+testRegFile :: IO()
+testRegFile = writeFile "test.txt" $ show $ register_file w ra1 ra2 wa wd regs
