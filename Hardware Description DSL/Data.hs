@@ -30,6 +30,7 @@ byte xs
   | otherwise = error "byte invalid value" 
 
 data Register = Register [Bit]
+  deriving (Show)
 
 register :: [Bit] -> Register
 register xs
@@ -37,6 +38,7 @@ register xs
    | otherwise = error "register invalid value"
 
 data Registers = Registers [Register]
+  deriving (Show)
 
 registers :: [Register] -> Registers
 registers xs
