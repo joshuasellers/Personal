@@ -8,6 +8,8 @@ more signal types (this feels separate from the hardware itself).
 
 module Data where
 
+import Data.List
+
 -- BIT
 
 data Bit = Bit Int 
@@ -33,6 +35,15 @@ control xs
 
 controlVal :: Control -> [Bit]
 controlVal (Control xs) = xs
+
+controlOpp :: Control -> [Bit]
+controlOpp (Control xs) = drop 2 xs
+
+controlAinv :: Control -> [Bit]
+controlAinv (Control xs) = take 1 xs
+
+controlBinv :: Control -> [Bit]
+controlBinv (Control xs) = take 1 (drop 1 xs)
 
 -- ADDRESS
 
