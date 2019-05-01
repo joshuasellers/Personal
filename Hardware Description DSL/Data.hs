@@ -30,20 +30,17 @@ data Control = Control [Bit]
 
 control :: [Bit] -> Control
 control xs 
-  | (length xs) == 4 = Control xs
+  | (length xs) == 2 = Control xs
   | otherwise = error "control invalid value" 
 
 controlVal :: Control -> [Bit]
 controlVal (Control xs) = xs
 
-controlOpp :: Control -> [Bit]
-controlOpp (Control xs) = drop 2 xs
+control_0 :: Control -> Bit
+control_0 (Control xs) = xs !! 1
 
-controlAinv :: Control -> [Bit]
-controlAinv (Control xs) = take 1 xs
-
-controlBinv :: Control -> [Bit]
-controlBinv (Control xs) = take 1 (drop 1 xs)
+control_1 :: Control -> Bit
+control_1 (Control xs) = xs !! 0
 
 -- ADDRESS
 
@@ -109,3 +106,12 @@ registers xs
 registersVal :: Registers -> [Register]
 registersVal (Registers b) = b
 
+-- MISC
+
+bitwiseOpp :: [Bit] -> [Bit] -> ([Bit] -> Bit) -> [Bit]
+bitwiseOpp [] [] _ = []
+bitwiseOpp [] _ _ = error "bitwiseOpp invalid value"
+bitwiseOpp _ [] _ = error "bitwiseOpp invalid value"
+bitwiseOpp (a:as) (b:bs) f 
+        | (length as) == (length bs) = (f [a,b]) : (bitwiseOpp as bs f)
+        | otherwise = error "bitwiseOpp invalid value"
