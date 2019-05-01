@@ -29,6 +29,13 @@ byte xs
   | (length xs) == 8 = Byte xs
   | otherwise = error "byte invalid value" 
 
+data Bit_32 = Bit_32 [Bit]
+
+bit_32 :: [Bit] -> Bit_32
+bit_32 xs 
+  | (length xs) == 32 = Bit_32 xs
+  | otherwise = error "bit_32 invalid value" 
+
 data Register = Register [Bit]
   deriving (Show)
 

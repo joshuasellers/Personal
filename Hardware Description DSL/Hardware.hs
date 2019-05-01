@@ -20,6 +20,7 @@ import Data.STRef
 import System.Random
 import GHC.Arr
 import Data.Function
+import Data.Binary
 
 
 import Data
