@@ -8,7 +8,7 @@ more signal types (this feels separate from the hardware itself).
 
 module Data where
 
--- SIGNALS
+-- BIT
 
 data Bit = Bit Int 
   deriving (Show)
@@ -21,6 +21,34 @@ bit n
 bitVal :: Bit -> Int
 bitVal (Bit b) = b
 
+-- CONTROL
+
+data Control = Control [Bit]
+  deriving (Show)
+
+control :: [Bit] -> Control
+control xs 
+  | (length xs) == 4 = Control xs
+  | otherwise = error "control invalid value" 
+
+controlVal :: Control -> [Bit]
+controlVal (Control xs) = xs
+
+-- ADDRESS
+
+data Address = Address [Bit]
+  deriving (Show)
+
+address :: [Bit] -> Address
+address xs 
+  | (length xs) == 5 = Address xs
+  | otherwise = error "address invalid value" 
+
+addressVal :: Address -> [Bit]
+addressVal (Address xs) = xs
+
+-- BYTE
+
 data Byte = Byte [Bit]
   deriving (Show)
 
@@ -29,12 +57,22 @@ byte xs
   | (length xs) == 8 = Byte xs
   | otherwise = error "byte invalid value" 
 
+byteVal :: Byte -> [Bit]
+byteVal (Byte xs) = xs
+
+-- BIT_32
+
 data Bit_32 = Bit_32 [Bit]
 
 bit_32 :: [Bit] -> Bit_32
 bit_32 xs 
   | (length xs) == 32 = Bit_32 xs
   | otherwise = error "bit_32 invalid value" 
+
+bit_32Val :: Bit_32 -> [Bit]
+bit_32Val (Bit_32 xs) = xs
+
+-- REGISTER
 
 data Register = Register [Bit]
   deriving (Show)
@@ -44,6 +82,11 @@ register xs
    | (length xs) == 32 = Register xs
    | otherwise = error "register invalid value"
 
+registerVal :: Register -> [Bit]
+registerVal (Register b) = b
+
+-- REGISTERS
+
 data Registers = Registers [Register]
   deriving (Show)
 
@@ -51,9 +94,6 @@ registers :: [Register] -> Registers
 registers xs
    | (length xs) == 32 = Registers xs
    | otherwise = error "registers invalid value"
-
-registerVal :: Register -> [Bit]
-registerVal (Register b) = b
 
 registersVal :: Registers -> [Register]
 registersVal (Registers b) = b
