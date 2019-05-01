@@ -312,7 +312,7 @@ wd = [Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1,
       Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1]
 
 w :: Bit
-w = Bit 1
+w = Bit 0
 
 wa :: [Bit]
 wa = [Bit 0, Bit 0, Bit 0, Bit 0, Bit 0]
