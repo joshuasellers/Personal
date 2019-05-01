@@ -9,3 +9,9 @@ module Example where
 
 import Hardware
 import Data
+
+{-
+Arithmetic Logic Unit (ALU)
+
+Useful link: http://web.cse.ohio-state.edu/~teodorescu.1/download/teaching/cse675.au08/Cse675.02.F.ALUDesign_part1.pdf
+-}
