@@ -29,9 +29,22 @@ alu_1bit a b cntrl carry = (result , c)
                       then snd sub
                       else snd add
                 else carry
-{-
-alu :: Bit_32 -> Bit_32 -> Control -> (Bit_32, Bit, Bit, Bit)
-alu a b control = 
-      where c0 = (bitVal (control_0 control))
-            c1 = (bitVal (control_1 control))
--}
+
+alu :: Bit_32 -> Bit_32 -> Control -> (Bit_32, Bit, Bit)
+alu a_vals b_vals cntrl = if c1 == 0
+                    then ((bit_32 (fst and_or)), (zero (bit_32 (fst and_or))), (snd and_or))
+                    else (if c0 == 1
+                            then ((bit_32 (fst subs)), (zero (bit_32 (fst subs))), (snd subs))
+                            else ((bit_32 (fst adds)), (zero (bit_32 (fst adds))), (snd adds)) )
+      where c0 = (bitVal (control_0 cntrl))
+            c1 = (bitVal (control_1 cntrl))
+            as = bit_32Val a_vals
+            bs = bit_32Val b_vals
+            and_or = (foldr (\(a,b) (r,c) -> (((fst (alu_1bit a b cntrl c)):r),c)) ([], (Bit 0)) (zip as bs))
+            adds = (foldr (\(a,b) (r,c) -> 
+                           ( ((fst (alu_1bit a b cntrl c)):r) , (snd (alu_1bit a b cntrl c)) ) )  
+                              ([], (Bit 0)) (zip as bs))
+            subs = (foldr (\(a,b) (r,c) -> 
+                           ( ((fst (alu_1bit a b cntrl c)):r) , (snd (alu_1bit a b cntrl c)) ) ) 
+                              ([], (Bit 1)) (zip as bs))
+            zero bits = (not_gate (or_gate (bit_32Val bits)))
