@@ -17,16 +17,21 @@ Useful link: http://web.cse.ohio-state.edu/~teodorescu.1/download/teaching/cse67
 -}
 
 alu_1bit :: Bit -> Bit -> Control -> Bit -> (Bit, Bit)
-alu_1bit a b control carry = (result , c)
-    where and = and_gate [a,b]
-          or = or_gate [a,b]
+alu_1bit a b cntrl carry = (result , c)
+    where ands = and_gate [a,b]
+          ors = or_gate [a,b]
           add = full_adder a b carry
           sub = full_adder a (not_gate b) carry
-          ops = [or,and, (fst add),(fst sub)]
-          result = multiplexer (controlVal control) ops
-          c = if (bitVal (control_1 control)) == 1 && (bitVal (control_0 control)) == 1 
-          	     then snd sub
-          	     else snd add
-
+          ops = [ors,ands, (fst add),(fst sub)]
+          result = multiplexer (controlVal cntrl) ops
+          c = if (bitVal (control_1 cntrl)) == 1 
+                then if (bitVal (control_1 cntrl)) == 1 && (bitVal (control_0 cntrl)) == 1 
+                      then snd sub
+                      else snd add
+                else carry
+{-
 alu :: Bit_32 -> Bit_32 -> Control -> (Bit_32, Bit, Bit, Bit)
-alu a b control = bitwiseOpp (bit_32Val a) (bit_32Val b) alu_1bit 
+alu a b control = 
+      where c0 = (bitVal (control_0 control))
+            c1 = (bitVal (control_1 control))
+-}
