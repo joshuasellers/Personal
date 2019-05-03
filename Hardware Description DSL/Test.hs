@@ -9,7 +9,7 @@ module Test where
 
 import Hardware
 import Data
-import Example
+import ExampleHardware
 
 
 r0 :: [Bit]
@@ -326,3 +326,35 @@ ra2 = [Bit 0, Bit 0, Bit 0, Bit 0, Bit 1]
 
 testRegFile :: IO()
 testRegFile = writeFile "test.txt" $ show $ register_file w ra1 ra2 wa wd regs
+
+--------------------------------------------------------------------
+
+a :: Bit_32
+a = bit_32 [Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, 
+            Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, 
+            Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, 
+            Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1, Bit 1]
+
+b :: Bit_32
+b = bit_32 [Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, 
+            Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, 
+            Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, 
+            Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0, Bit 0]
+
+c :: Control
+c = control [Bit 1, Bit 0]
+
+test_big :: (Bit_32, Bit, Bit)
+test_big = alu a b c 
+
+small_a :: Bit
+small_a = bit 1
+
+small_b :: Bit 
+small_b = bit 0
+
+carry :: Bit 
+carry = bit 0
+
+test_small :: (Bit, Bit)
+test_small = alu_1bit small_a small_b c carry

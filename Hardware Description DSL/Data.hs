@@ -71,6 +71,7 @@ byteVal (Byte xs) = xs
 -- BIT_32
 
 data Bit_32 = Bit_32 [Bit]
+   deriving (Show)
 
 bit_32 :: [Bit] -> Bit_32
 bit_32 xs 

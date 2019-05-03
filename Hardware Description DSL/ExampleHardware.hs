@@ -5,7 +5,7 @@ File Description: An attempt at making an ALU.
 
 {-# OPTIONS -Wall -Wno-unused-imports #-}
 
-module Example where
+module ExampleHardware where
 
 import Hardware
 import Data
@@ -22,7 +22,7 @@ alu_1bit a b cntrl carry = (result , c)
           ors = or_gate [a,b]
           add = full_adder a b carry
           sub = full_adder a (not_gate b) carry
-          ops = [ors,ands, (fst add),(fst sub)]
+          ops = [(fst sub), (fst add), ands, ors]
           result = multiplexer (controlVal cntrl) ops
           c = if (bitVal (control_1 cntrl)) == 1 
                 then if (bitVal (control_1 cntrl)) == 1 && (bitVal (control_0 cntrl)) == 1 
