@@ -9,6 +9,7 @@ module Test where
 
 import Hardware
 import Data
+import Example
 
 
 r0 :: [Bit]
