@@ -34,13 +34,14 @@ alu a_vals b_vals cntrl = if c1 == 0
                             else ((bit_32 (fst adds)), (zero (bit_32 (fst adds))), (snd adds)) )
       where c0 = (bitVal (control_0 cntrl))
             c1 = (bitVal (control_1 cntrl))
+            carry = multiplexer (controlVal cntrl) [Bit 1, Bit 0, Bit 0, Bit 0]
             as = bit_32Val a_vals
             bs = bit_32Val b_vals
-            and_or = (foldr (\(a,b) (r,c) -> (((fst (alu_1bit a b cntrl c)):r),c)) ([], (Bit 0)) (zip as bs))
-            adds = (foldr (\(a,b) (r,c) -> 
+            and_or = foldr (\(a,b) (r,c) -> (((fst (alu_1bit a b cntrl c)):r),c)) ([], carry) (zip as bs)
+            adds = foldr (\(a,b) (r,c) -> 
                            ( ((fst (alu_1bit a b cntrl c)):r) , (snd (alu_1bit a b cntrl c)) ) )  
-                              ([], (Bit 0)) (zip as bs))
-            subs = (foldr (\(a,b) (r,c) -> 
+                              ([], carry) (zip as bs)
+            subs = foldr (\(a,b) (r,c) -> 
                            ( ((fst (alu_1bit a b cntrl c)):r) , (snd (alu_1bit a b cntrl c)) ) ) 
-                              ([], (Bit 1)) (zip as bs))
-            zero bits = (not_gate (or_gate (bit_32Val bits)))
+                              ([], carry) (zip as bs)
+            zero bits = not_gate (or_gate (bit_32Val bits))
