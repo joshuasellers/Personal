@@ -27,21 +27,9 @@ alu_1bit a b cntrl carry = (result , c)
           c = multiplexer (controlVal cntrl) [(snd sub), (snd add), carry, carry]  
 
 alu :: Bit_32 -> Bit_32 -> Control -> (Bit_32, Bit, Bit)
-alu a_vals b_vals cntrl = if c1 == 0
-                    then ((bit_32 (fst and_or)), (zero (bit_32 (fst and_or))), (snd and_or))
-                    else (if c0 == 1
-                            then ((bit_32 (fst subs)), (zero (bit_32 (fst subs))), (snd subs))
-                            else ((bit_32 (fst adds)), (zero (bit_32 (fst adds))), (snd adds)) )
-      where c0 = (bitVal (control_0 cntrl))
-            c1 = (bitVal (control_1 cntrl))
-            carry = multiplexer (controlVal cntrl) [Bit 1, Bit 0, Bit 0, Bit 0]
+alu a_vals b_vals cntrl = ((bit_32 (fst result)), (zero (bit_32 (fst result))), (snd result))
+      where carry = multiplexer (controlVal cntrl) [Bit 1, Bit 0, Bit 0, Bit 0]
             as = bit_32Val a_vals
             bs = bit_32Val b_vals
-            and_or = foldr (\(a,b) (r,c) -> (((fst (alu_1bit a b cntrl c)):r),c)) ([], carry) (zip as bs)
-            adds = foldr (\(a,b) (r,c) -> 
-                           ( ((fst (alu_1bit a b cntrl c)):r) , (snd (alu_1bit a b cntrl c)) ) )  
-                              ([], carry) (zip as bs)
-            subs = foldr (\(a,b) (r,c) -> 
-                           ( ((fst (alu_1bit a b cntrl c)):r) , (snd (alu_1bit a b cntrl c)) ) ) 
-                              ([], carry) (zip as bs)
+            result = foldr (\(a,b) (r,c) -> (((fst (alu_1bit a b cntrl c)):r),c)) ([], carry) (zip as bs)
             zero bits = not_gate (or_gate (bit_32Val bits))
