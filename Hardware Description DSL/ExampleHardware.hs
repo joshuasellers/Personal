@@ -24,11 +24,7 @@ alu_1bit a b cntrl carry = (result , c)
           sub = full_adder a (not_gate b) carry
           ops = [(fst sub), (fst add), ands, ors]
           result = multiplexer (controlVal cntrl) ops
-          c = if (bitVal (control_1 cntrl)) == 1 
-                then if (bitVal (control_1 cntrl)) == 1 && (bitVal (control_0 cntrl)) == 1 
-                      then snd sub
-                      else snd add
-                else carry
+          c = multiplexer (controlVal cntrl) [(snd sub), (snd add), carry, carry]  
 
 alu :: Bit_32 -> Bit_32 -> Control -> (Bit_32, Bit, Bit)
 alu a_vals b_vals cntrl = if c1 == 0
