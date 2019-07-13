@@ -1,7 +1,14 @@
-import spotipy
-from config import token
+##################################
+# Script for accessing a user's  #
+# Spotify account and removing   #
+# duplicate songs from their     #
+# playlists                      #
+##################################
 
-if token:
+import spotipy
+from config import token, username
+
+if token and username:
     sp = spotipy.Spotify(auth=token)
     results = []
     empty = False
@@ -9,12 +16,19 @@ if token:
     while not empty:
         result = sp.current_user_playlists(limit=50, offset=offset)
         offset += 50
-        if len(result['items']) == 0: empty = True
-        else: results.append(result)
+        if len(result['items']) == 0:
+            empty = True
+        else:
+            results.append(result)
     print(results)
     for result in results:
         for item in result['items']:
-            print(item['name'])
+            if item['owner']['id'] == username:
+                print('************************')
+                print(item['name'])
+                print(item['id'])
+                print('************************')
+
 else:
-    print ("Can't get token")
+    print("Can't get token or username")
 
