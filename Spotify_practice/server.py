@@ -9,6 +9,12 @@ import spotipy
 from config import token, username
 
 
+def removekey(d, key):
+    r = dict(d)
+    del r[key]
+    return r
+
+
 def get_playlists(spotify):
     r = []
     empty = False
@@ -19,7 +25,7 @@ def get_playlists(spotify):
         if len(result['items']) == 0:
             empty = True
         else:
-            r.append(result)
+            r += result['items']
     return r
 
 
@@ -37,7 +43,27 @@ def get_tracks(spotify, playlist):
             empty = True
         else:
             tracks += result['items']
-    return tracks
+    track_tracker = {}
+    for track in tracks:
+        if track['track']['id'] in track_tracker:
+            track_tracker[track['track']['id']] += 1
+        else:
+            track_tracker[track['track']['id']] = 1
+    for track in track_tracker:
+        if track_tracker[track] == 1:
+            track_tracker = removekey(track_tracker,track)
+    removable_tracks = {}
+    for track in track_tracker:
+        count = track_tracker[track]
+        for song in range(0,len(tracks)):
+            if tracks[song]['track']['id'] == track:
+                if count != 1:
+                    count -= 1
+                    if track not in removable_tracks:
+                        removable_tracks[track] = [[song]]
+                    else:
+                        removable_tracks[track].append([song])
+    return track_tracker
 
 
 def script():
@@ -59,3 +85,4 @@ def script():
 
 
 script()
+
