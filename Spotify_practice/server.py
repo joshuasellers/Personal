@@ -60,26 +60,33 @@ def get_tracks(spotify, playlist):
                 if count != 1:
                     count -= 1
                     if track not in removable_tracks:
-                        removable_tracks[track] = [[song]]
+                        removable_tracks[(tracks[song]['track']['name'],track)] = [[song]]
                     else:
-                        removable_tracks[track].append([song])
-    return track_tracker
+                        removable_tracks[(tracks[song]['track']['name'],track)].append([song])
+    return build_track_objects(removable_tracks)
+
+
+def build_track_objects(tracks):
+    objects = []
+    for track in tracks:
+        obj = {"uri": track[1], "positions": tracks[track]}
+        objects.append((track[0], obj))
+    return objects
+
 
 
 def script():
     if token and username:
         sp = spotipy.Spotify(auth=token)
         results = get_playlists(sp)
-        print(results)
-        for result in results:
-            for item in result['items']:
-                if item['owner']['id'] == username:
-                    print('************************')
-                    print(item['name'])
-                    print(item['id'])
-                    print("\n")
-                    print(len(get_tracks(sp, item['id'])))
-                    print('************************')
+        for item in results:
+            if item['owner']['id'] == username:
+                print('************************')
+                print(item['name'])
+                print(item['id'])
+                print("\n")
+                print(get_tracks(sp, item['id']))
+                print('************************')
     else:
         print("Can't get token or username")
 
