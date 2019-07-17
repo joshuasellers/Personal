@@ -69,9 +69,16 @@ def get_tracks(spotify, playlist):
 def build_track_objects(tracks):
     objects = []
     for track in tracks:
-        obj = {"uri": track[1], "positions": tracks[track]}
+        indices = [i[0] for i in tracks[track]]
+        obj = {"uri": track[1], "positions": indices}
         objects.append((track[0], obj))
     return objects
+
+
+def remove_dupes(duplicates, sp, playlist_id):
+    for dupe in duplicates:
+        obj = dupe[1]
+        sp.user_playlist_remove_specific_occurrences_of_tracks(username,playlist_id,obj)
 
 
 
@@ -81,15 +88,23 @@ def script():
         results = get_playlists(sp)
         for item in results:
             if item['owner']['id'] == username:
+                playlist_id = item['id']
+                playlist_name = item['name']
+                dupes = get_tracks(sp, item['id'])
+
                 print('************************')
-                print(item['name'])
-                print(item['id'])
-                print("\n")
-                print(get_tracks(sp, item['id']))
+                print(playlist_name)
+                print(playlist_id)
+                print("")
+                print("Duplicates: ", dupes)
+                remove_dupes(dupes, sp, playlist_id)
+                print("")
+                print("Duplicates removed")
                 print('************************')
     else:
         print("Can't get token or username")
 
 
 script()
+
 
